@@ -8,9 +8,10 @@
                 </div>
             <?php } ?>
 
-            <form method="POST" action="<?php echo base_url(); ?>/usuarios/guardar" autocomplete="off">
+            <form method="POST" action="<?php echo base_url(); ?>/usuarios/guardar1" autocomplete="off">
                 <input type="hidden" value="<?php echo $dato['id']; ?>" name="id" />
-
+                <input type="hidden" value="<?php echo $dato['id_caja']; ?>" name="id_caja" />
+                <input type="hidden" value="<?php echo $dato['id_rol']; ?>" name="id_rol" />
 
                 <div class="form-group">
                     <div class="row">
@@ -28,22 +29,12 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-12 col-sm-6">
-                            <label>*Caja</label>
-                            <select class="form-select" name="id_caja" id="id_caja" required>
-                                <option value="">Seleccione Caja</option>
-                                <?php foreach ($cajas as $caja) { ?>
-                                    <option value="<?= $caja['id']; ?>" <?php if($caja['id']==$dato['id_caja']){echo 'selected' ;}?>><?= $caja['nombre']; ?></option>
-                                <?php } ?>
-                            </select>
+                            <label>Caja</label>
+                           <input class="form-control" id="caja" name="caja" type="text" value="<?= $dato['caja']; ?>" disabled />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <label>*Rol</label>
-                            <select class="form-select" name="id_rol" id="id_rol" required>
-                                <option value="">Seleccione Rol</option>
-                                <?php foreach ($roles as $rol) { ?>
-                                    <option value="<?= $rol['id']; ?>" <?php if($rol['id']==$dato['id_rol']){echo 'selected' ;}?>><?= $rol['nombre']; ?></option>
-                                <?php } ?>
-                            </select>
+                            <label>Rol</label>
+                            <input class="form-control" id="rol" name="rol" type="text" value="<?= $dato['rol'] ;?>" disabled />
                         </div>
                     </div>
                 </div>

@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>GESVENTA - SIXTORED</title>
+    <title>SIXTORED</title>
     <!--
     <link href="<?php echo base_url(); ?>/css/table_style.css" rel="stylesheet" />
     <link href="<?php echo base_url(); ?>/css/bootstrap.min.css" rel="stylesheet" />
@@ -53,13 +53,13 @@ table>tbody>tr>td {
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="<?php echo base_url(); ?>/inicio">GESVENTA | SIXTORED</a>
+        <a class="navbar-brand ps-3" href="<?php echo base_url(); ?>/inicio">SIXTORED</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 
-        <!-- Navbar-->
+        <!-- Navbar
         <ul class="navbar-nav ms-auto me-3 me-0 me-md-3 my-2 my-md-0">
-            <li class="nav-item dropdown">
+            <li class="nav-item">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php echo $us_session->nombre ;?><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="#!"><i class="fas fa-user-alt"></i> Perfil</a></li>
@@ -71,12 +71,14 @@ table>tbody>tr>td {
                 </ul>
             </li>
         </ul>
+-->
     </nav>
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
+                        <!--
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-shopping-basket"></i></div>
                             Productos
@@ -89,7 +91,7 @@ table>tbody>tr>td {
                                 <a class="nav-link" href="<?php echo base_url(); ?>/categorias">Categorias</a>
                             </nav>
                         </div>
-
+-->
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseclientes" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                             Clientes
@@ -111,7 +113,7 @@ table>tbody>tr>td {
                         <div class="collapse" id="collapsecompras" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="<?php echo base_url(); ?>/rlaboreos/index">Registro de labores</a>
-                                <a class="nav-link" href="<?php echo base_url(); ?>/clientes">tipos</a>
+                               
                             </nav>
                         </div>
 <!--
@@ -152,6 +154,19 @@ table>tbody>tr>td {
                             </nav>
                         </div>
 
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseusuarios" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user fa-fw"></i></div>
+                            usuarios
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseusuarios" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="<?php echo base_url(); ?>/usuarios/perfil/<?=$us_session->id_usuario?>"><i class="fas fa-user-alt"></i> Perfil</a>
+                                <a class="nav-link" href="<?php echo base_url(); ?>/usuarios/cambiar_contrasenia/<?=$us_session->id_usuario?>"><i class="fas fa-key"></i> Cambiar Contraseña</a>
+                                <a class="nav-link" href="<?php echo base_url(); ?>/usuarios/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesion</a>
+                            </nav>
+                        </div>
+
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseconfig" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
                             Administracion
@@ -162,6 +177,7 @@ table>tbody>tr>td {
                                 <a class="nav-link" href="<?php echo base_url(); ?>/configuracion">Configuracion</a>
                                 <a class="nav-link" href="<?php echo base_url(); ?>/usuarios">Usuarios</a>
                                 <a class="nav-link" href="<?php echo base_url(); ?>/roles">Roles</a>
+                                <a class="nav-link" href="<?php echo base_url(); ?>/toperacion">Tipo Operaciones</a>
                                 <!--
                                 <a class="nav-link" href="<?php echo base_url(); ?>/cajas">Cajas</a>
                                 <a class="nav-link" href="<?php echo base_url(); ?>/respaldo">Respaldo</a>
@@ -175,7 +191,7 @@ table>tbody>tr>td {
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
-                    Start Bootstrap
+                    <?php echo $us_session->nombre ;?>
                 </div>
             </nav>
         </div>

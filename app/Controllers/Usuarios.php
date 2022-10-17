@@ -4,23 +4,26 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\CajasModel;
+use App\Models\DetalleModel;
 use App\Models\RolesModel;
 use App\Models\UsuariosModel;
-use App\Models\LogsModel ;
+use App\Models\LogsModel;
 use CodeIgniter\Validation\Validation;
 
 class Usuarios extends BaseController
 {
 
-    protected $usuarios, $logs;
-    protected $reglas, $reglaslogin, $reglascambia;
+    protected $usuarios, $logs, $session, $accesos;
+    protected $reglas, $reglaslogin, $reglascambia, $reglasguarda;
 
     public function __construct()
     {
+        $this->session = session();
         $this->usuarios = new UsuariosModel();
         $this->cajas = new CajasModel();
         $this->roles = new RolesModel();
-        $this->logs = new LogsModel() ;
+        $this->logs = new LogsModel();
+        $this->accesos = new DetalleModel();
 
         helper(['form']);
         $this->reglas = [
@@ -54,6 +57,25 @@ class Usuarios extends BaseController
             ]
         ];
 
+        $this->reglasguarda = [
+            'usuario' => [
+                'rules' => 'required|is_unique[usuarios.usuario,id,{id}]',
+                'errors' => [
+                    'required' => 'El campo *usuario22 es obligatorio.',
+                    'is_unique' => 'El campo *{field} debe ser unico.'
+                ]
+            ],
+            'nombre' => ['rules' => 'required', 'errors' => ['required' => 'El campo *Nombre es obligatorio.']],
+            'email'  => [
+                'rules' => 'required|valid_email[usuarios.email,id,{id}]',
+                'errors' => [
+                    'required' => 'El campo *{field} es obligatorio.',
+                    'valid_email' => 'debe introducir un email valido.'
+                ]
+            ],
+
+        ];
+
         $this->reglaslogin = [
             'usuario' => [
                 'rules' => 'required',
@@ -84,24 +106,50 @@ class Usuarios extends BaseController
 
     public function index($activo = 1)
     {
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
 
-        $usuarios = $this->usuarios->where('activo', $activo)->findAll();
-        $data = ['titulo' => 'Usuarios', 'datos' => $usuarios];
-        echo view('header');
-        echo view('usuarios/index', $data);
-        echo view('footer');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'UsuariosLista');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+            $usuarios = $this->usuarios->where('activo', $activo)->findAll();
+            $data = ['titulo' => 'Usuarios', 'datos' => $usuarios];
+            echo view('header');
+            echo view('usuarios/index', $data);
+            echo view('footer');
+        }
     }
 
     public function nuevo()
     {
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
 
-        $cajas = $this->cajas->where('activo', 1)->findAll();
-        $roles = $this->roles->where('activo', 1)->findAll();
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'UsuariosEditar');
+        //$acceder = true ;
 
-        $data = ['titulo' => 'Agregar Usuario', 'cajas' => $cajas, 'roles' => $roles];
-        echo view('header');
-        echo view('usuarios/nuevo', $data);
-        echo view('footer');
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+            $cajas = $this->cajas->where('activo', 1)->findAll();
+            $roles = $this->roles->where('activo', 1)->findAll();
+
+            $data = ['titulo' => 'Agregar Usuario', 'cajas' => $cajas, 'roles' => $roles];
+            echo view('header');
+            echo view('usuarios/nuevo', $data);
+            echo view('footer');
+        }
     }
 
     public function insertar()
@@ -134,26 +182,75 @@ class Usuarios extends BaseController
 
     public function editar($id, $valid = null)
     {
-        $cajas = $this->cajas->where('activo', 1)->findAll();
-        $roles = $this->roles->where('activo', 1)->findAll();
-        $usuario = $this->usuarios->where('id', $id)->first();
-        if ($valid != null) {
-            $data = ['titulo' => 'Editar Usuario', 'dato' => $usuario, 'cajas' => $cajas, 'roles' => $roles, 'validation' => $valid];
-        } else {
-            $data = ['titulo' => 'Editar Usuario', 'dato' => $usuario, 'cajas' => $cajas, 'roles' => $roles];
+
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
         }
 
-        echo view('header');
-        echo view('usuarios/editar', $data);
-        echo view('footer');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'UsuariosEditar');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $cajas = $this->cajas->where('activo', 1)->findAll();
+            $roles = $this->roles->where('activo', 1)->findAll();
+            $usuario = $this->usuarios->where('id', $id)->first();
+            if ($valid != null) {
+                $data = ['titulo' => 'Editar Usuario', 'dato' => $usuario, 'cajas' => $cajas, 'roles' => $roles, 'validation' => $valid];
+            } else {
+                $data = ['titulo' => 'Editar Usuario', 'dato' => $usuario, 'cajas' => $cajas, 'roles' => $roles];
+            }
+
+            echo view('header');
+            echo view('usuarios/editar', $data);
+            echo view('footer');
+        }
+    }
+
+    public function perfil($id, $valid = null)
+    {
+
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'UsuariosPerfil');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $cajas = $this->cajas->where('activo', 1)->findAll();
+            $roles = $this->roles->where('activo', 1)->findAll();
+            // $usuario = $this->usuarios->where('id', $id)->first();
+            $usuario = $this->usuarios->traerusuario($id);
+            if ($valid != null) {
+                $data = ['titulo' => 'Editar Usuario', 'dato' => $usuario, 'cajas' => $cajas, 'roles' => $roles, 'validation' => $valid];
+            } else {
+                $data = ['titulo' => 'Editar Usuario', 'dato' => $usuario, 'cajas' => $cajas, 'roles' => $roles];
+            }
+
+            echo view('header');
+            echo view('usuarios/perfil', $data);
+            echo view('footer');
+        }
     }
 
     public function guardar()
     {
 
-        if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
+        if ($this->request->getMethod() == 'post' && $this->validate($this->reglasguarda)) {
 
-            $hash = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+            //$hash = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
 
             $this->usuarios->update(
                 $this->request->getPost('id'),
@@ -161,11 +258,13 @@ class Usuarios extends BaseController
                     'usuario' => $this->request->getPost('usuario'),
                     'nombre' => $this->request->getPost('nombre'),
                     'email' => $this->request->getPost('email'),
-                    'password' => $hash,
                     'id_rol' => $this->request->getPost('id_rol'),
                     'id_caja' => $this->request->getPost('id_caja')
                 ]
             );
+            $session = session();
+            $session->nombre = $this->request->getPost('nombre');
+            $session->usuario =  $this->request->getPost('usuario');
             return redirect()->to(base_url() . '/usuarios');
         } else {
             return $this->editar($this->request->getPost('id'), $this->validator);
@@ -221,19 +320,19 @@ class Usuarios extends BaseController
                         'id_rol'   => $datosUsuario['id_rol']
                     ];
 
-                    $ip = $_SERVER['REMOTE_ADDR'] ; 
+                    $ip = $_SERVER['REMOTE_ADDR'];
                     // obtiene ip
-                    $detalles = $_SERVER['HTTP_USER_AGENT'] ; 
+                    $detalles = $_SERVER['HTTP_USER_AGENT'];
                     // se obitene el dispositivo desde donde se loguea
                     //echo $_SERVER['HTTP_USER_AGENT'] ."\n\n" ;
-                   
+
 
                     $this->logs->save([
                         'id_usuario' => $datosUsuario['id'],
                         'evento' => 'Inicio de session',
                         'ip' => $ip,
                         'detalles' => $detalles
-                    ]) ;
+                    ]);
 
                     $session = session();
                     $session->set($datosSesion);
@@ -260,47 +359,58 @@ class Usuarios extends BaseController
         return redirect()->to(base_url());
     }
 
-    public function cambiar_contrasenia()
+    public function cambiar_contrasenia($id_usuario)
     {
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
 
-        $session = session();
-        $id = $session->id_usuario;
-        $usuario = $this->usuarios->where('id', $id)->first();
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'UsuariosCambiarContrasenia');
+        //$acceder = true ;
 
-        $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario];
-        echo view('header');
-        echo view('usuarios/cambiar_contrasenia', $data);
-        echo view('footer');
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $usuario = $this->usuarios->where('id', $id_usuario)->first();
+
+            $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario];
+            echo view('header');
+            echo view('usuarios/cambiar_contrasenia', $data);
+            echo view('footer');
+        }
     }
 
-    public function actuliza_contrasenia(){
+    public function actuliza_contrasenia()
+    {
 
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglascambia)) {
 
-            $session = session() ;
-            $id = $session->id_usuario ;
+            $session = session();
+            $id = $session->id_usuario;
             $hash = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
 
-            $this->usuarios->update($id,['password'=> $hash]);
+            $this->usuarios->update($id, ['password' => $hash]);
 
             $usuario = $this->usuarios->where('id', $id)->first();
 
-            $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario, 'mensaje'=> 'Password modificada correctamente..'];
+            $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario, 'mensaje' => 'Password modificada correctamente..'];
             echo view('header');
             echo view('usuarios/cambiar_contrasenia', $data);
-            echo view('footer') ;
+            echo view('footer');
         } else {
 
-            $session = session() ;
-            $id = $session->id_usuario ;
+            $session = session();
+            $id = $session->id_usuario;
             $usuario = $this->usuarios->where('id', $id)->first();
 
             $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario, 'validation' => $this->validator];
             echo view('header');
             echo view('usuarios/cambiar_contrasenia', $data);
-            echo view('footer') ;
+            echo view('footer');
         }
-
-
     }
 }

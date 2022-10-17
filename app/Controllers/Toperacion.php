@@ -3,18 +3,18 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\CamposModel;
 use App\Models\DetalleModel;
+use App\Models\ToperacionModel;
 
-class Campos extends BaseController
+class Toperacion extends BaseController
 {
 
-    protected $campos, $session, $accesos;
+    protected $toperacion, $session, $accesos;
 
     public function __construct()
     {
         $this->session = session();
-        $this->campos = new CamposModel();
+        $this->toperacion = new ToperacionModel();
         $this->accesos = new DetalleModel();
     }
 
@@ -25,7 +25,7 @@ class Campos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CamposLista');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'ToperacionLista');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -35,11 +35,11 @@ class Campos extends BaseController
             echo view('footer');
         } else {
 
-            $campos = $this->campos->where('activo', $activo)->findAll();
-            $data = ['titulo' => 'Campos', 'datos' => $campos];
+            $toperacion = $this->toperacion->where('activo', $activo)->findAll();
+            $data = ['titulo' => 'Tipo operacion', 'datos' => $toperacion];
 
             echo view('header');
-            echo view('campos/index', $data);
+            echo view('toperacion/index', $data);
             echo view('footer');
         }
     }
@@ -51,7 +51,7 @@ class Campos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CamposNuevo');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'ToperacionNuevo');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -60,9 +60,9 @@ class Campos extends BaseController
             echo view('notienepermiso');
             echo view('footer');
         } else {
-            $data = ['titulo' => 'Agregar Campo'];
+            $data = ['titulo' => 'Agregar Tipo Operacion'];
             echo view('header');
-            echo view('campos/nuevo', $data);
+            echo view('toperacion/nuevo', $data);
             echo view('footer');
         }
     }
@@ -70,18 +70,18 @@ class Campos extends BaseController
     public function insertar()
     {
 
-        $this->campos->save(['nombre' => $this->request->getPost('nombre')]);
-        $this->campos->save(['ubicacion' => $this->request->getPost('ubicacion')]);
-        return redirect()->to(base_url() . '/campos');
+        $this->toperacion->save(['nombre' => $this->request->getPost('nombre')]);
+        return redirect()->to(base_url() . '/toperacion');
     }
 
     public function editar($id)
     {
+
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CamposEditar');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'ToperacionEditar');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -90,11 +90,10 @@ class Campos extends BaseController
             echo view('notienepermiso');
             echo view('footer');
         } else {
-
-            $campo = $this->campos->where('id', $id)->first();
-            $data = ['titulo' => 'Editar Campo', 'dato' => $campo];
+            $grupo = $this->toperacion->where('id', $id)->first();
+            $data = ['titulo' => 'Editar Tipo operacion', 'dato' => $grupo];
             echo view('header');
-            echo view('campos/editar', $data);
+            echo view('toperacion/editar', $data);
             echo view('footer');
         }
     }
@@ -102,19 +101,17 @@ class Campos extends BaseController
     public function guardar()
     {
 
-        $this->campos->update($this->request->getPost('id'), ['nombre' => $this->request->getPost('nombre')]);
-        $this->campos->update($this->request->getPost('id'), ['ubicacion' => $this->request->getPost('ubicacion')]);
-        return redirect()->to(base_url() . '/campos');
+        $this->toperacion->update($this->request->getPost('id'), ['nombre' => $this->request->getPost('nombre')]);
+        return redirect()->to(base_url() . '/toperacion');
     }
 
     public function eliminar($id)
     {
-
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CamposEliminar');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'ToperacionEliminar');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -123,8 +120,9 @@ class Campos extends BaseController
             echo view('notienepermiso');
             echo view('footer');
         } else {
-            $this->campos->update($id, ['activo' => 0]);
-            return redirect()->to(base_url() . '/campos');
+
+            $this->toperacion->update($id, ['activo' => 0]);
+            return redirect()->to(base_url() . '/toperacion');
         }
     }
 
@@ -134,7 +132,7 @@ class Campos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CamposEliminar');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'ToperacionEliminar');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -144,8 +142,8 @@ class Campos extends BaseController
             echo view('footer');
         } else {
 
-            $this->campos->update($id, ['activo' => 1]);
-            return redirect()->to(base_url() . '/campos');
+            $this->toperacion->update($id, ['activo' => 1]);
+            return redirect()->to(base_url() . '/toperacion');
         }
     }
 
@@ -155,7 +153,7 @@ class Campos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CamposEliminar');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'ToperacionLista');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -164,11 +162,12 @@ class Campos extends BaseController
             echo view('notienepermiso');
             echo view('footer');
         } else {
-            $campos = $this->campos->where('activo', $activo)->findAll();
-            $data = ['titulo' => 'Campos eliminados', 'datos' => $campos];
+
+            $toperacion = $this->toperacion->where('activo', $activo)->findAll();
+            $data = ['titulo' => 'Tipo operacion eliminados', 'datos' => $toperacion];
 
             echo view('header');
-            echo view('campos/eliminados', $data);
+            echo view('toperacion/eliminados', $data);
             echo view('footer');
         }
     }

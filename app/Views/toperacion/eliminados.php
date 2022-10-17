@@ -4,8 +4,8 @@
             <h4 class="mt-4"><?= $titulo; ?></h4>
             <div>
                 <p>
-                    <a href="<?php echo base_url();?>/grupos/" class="btn btn-info">Volver</a>
-                    <a href="<?php echo base_url();?>/grupos/eliminados" class="btn btn-warning">Eliminados</a>
+                    <a href="<?php echo base_url();?>/toperacion/" class="btn btn-info">Volver</a>
+                    <a href="<?php echo base_url();?>/toperacion/eliminados" class="btn btn-warning">Eliminados</a>
                 </p>
             </div>
                 <table id="datatablesSimple" class="table table-sm table-striped table-hover" style="width:100%">
@@ -22,7 +22,7 @@
                             <td><?php echo $dato['id'];?></td>
                             <td><?php echo $dato['nombre'] ;?></td>
                             <td>
-                            <a href="#" data-href="<?php echo base_url().'/grupos/restaurar/'. $dato['id']; ?>" data-bs-toggle="modal" 
+                            <a href="#" data-href="<?php echo base_url().'/toperacion/restaurar/'. $dato['id']; ?>" data-bs-toggle="modal" 
                                 data-bs-target="#modal-confirma" title="Restaurar Registro" class="btn btn-danger"><i class="fas fa-trash-restore"></i></a>
                             </td>
                         </tr>

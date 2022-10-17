@@ -12,6 +12,22 @@
 </div>
 </div>
 
+<script>
+
+$(".btn-ok").click(function(event) {
+  var href= $(this).attr('href');
+  window.location.href = href;
+  event.preventDefault();
+});    
+
+$('#modal-confirma').on('show.bs.modal', function(e) {
+		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+		
+		$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+	}); 
+
+</script>
+
 <script src="<?php echo base_url(); ?>/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo base_url(); ?>/js/scripts.js"></script>
 
@@ -48,20 +64,6 @@
 <!--
 <script src="<?php echo base_url(); ?>/js/datatables-simple-demo.js"></script>
 -->
-<script>
 
-$(".btn-ok").click(function(event) {
-  var href= $(this).attr('href');
-  window.location.href = href;
-  event.preventDefault();
-});    
-
-$('#modal-confirma').on('show.bs.modal', function(e) {
-		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-		
-		$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
-	}); 
-
-</script>
 </body>
 </html>

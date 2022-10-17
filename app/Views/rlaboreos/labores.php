@@ -18,14 +18,15 @@
                     <a href="<?php echo base_url(); ?>/rlaboreos/eliminados" class="btn btn-warning">Eliminados</a>
                </div>    
             </div>
+           
                               
-            <table id="datatablesSimple" class="table table-sm table-striped table-hover" style="width:100%">
+            <table id="datatablesSimple" class="table table-sm table-success table-striped table-hover" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>FECHA</th>
                         <th>T.OP</th>
-                        <th>CLIENE</th>
+                        <th>CLIENTE</th>
                         <th>CAMPO</th>
                         <th>DETALLE</th>
                         <th>MONTO</th>

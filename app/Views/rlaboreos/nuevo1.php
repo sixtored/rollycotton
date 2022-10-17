@@ -12,7 +12,7 @@
                     <div class="col-4">
                     <h5><?= 'Total Monto  '.number_format($total,2,'.',','); ?></h5>
                     </div>
-                    <div class="col-8">
+                    <div class="col-4">
                         <h5><?= 'Total Litros  '.number_format($litros,2,'.',','); ?></h5>
                     </div>
             </div>

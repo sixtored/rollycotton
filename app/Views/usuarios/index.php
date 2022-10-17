@@ -8,7 +8,7 @@
                     <a href="<?php echo base_url(); ?>/usuarios/eliminados" class="btn btn-warning">Eliminados</a>
                 </p>
             </div>
-            <table id="datatablesSimple">
+            <table id="datatablesSimple" class="table table-sm table-success table-striped table-hover" style="width:100%">
                 <thead>
                     <tr>
                         <th>id</th>
@@ -24,7 +24,7 @@
                             <td><?php echo $dato['usuario']; ?></td>
                             <td><?php echo $dato['nombre']; ?></td>
                             <td>
-                                <a href="<?php echo base_url(); ?>/usuarios/editar/<?php echo $dato['id']; ?>" title="Editar Unidad" class="btn btn-warning"><i class="far fa-edit"></i></a>    
+                                <a href="<?php echo base_url(); ?>/usuarios/editar/<?php echo $dato['id']; ?>" title="Editar perfil" class="btn btn-warning"><i class="far fa-edit"></i></a>    
                                 <a href="#" data-href="<?php echo base_url().'/usuarios/eliminar/'. $dato['id']; ?>" data-bs-toggle="modal" 
                                 data-bs-target="#modal-confirma" title="Eliminar Registro" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
                             </td>

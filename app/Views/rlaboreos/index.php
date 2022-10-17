@@ -15,7 +15,7 @@
                         <th>ID</th>
                         <th>FECHA</th>
                         <th>T.OP</th>
-                        <th>CLIENE</th>
+                        <th>CLIENTE</th>
                         <th>DETALLE</th>
                         <th>MONTO</th>
                         <th>LITROS</th>

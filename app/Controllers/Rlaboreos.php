@@ -39,8 +39,12 @@ class Rlaboreos extends BaseController
 
     public function index($activo = 1)
     {
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CuentaCorrienteCliente');
-        $acceder = true;
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresLista');
+        //$acceder = true ;
 
         if (!$acceder) {
             echo 'No tienes permisos para este modulo';
@@ -90,7 +94,7 @@ class Rlaboreos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CuentaCorrienteCliente');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresCampo');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -139,7 +143,7 @@ class Rlaboreos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CuentaCorrienteCliente');
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresLista');
         //$acceder = true ;
 
         if (!$acceder) {
@@ -192,41 +196,53 @@ class Rlaboreos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $query = "SELECT rl.id,
-        rl.fecha,
-        rl.id_campo,
-        rl.id_operacion,
-        rl.detalle,
-        rl.monto, 
-        rl.litros,
-        op.nombre as tipo,
-        cl.id as idcliente,
-        cl.nombre as cliente
-        FROM rlaboreos rl 
-        INNER JOIN toperacion op 
-        ON op.id = rl.id_operacion
-        INNER JOIN clientes cl
-        ON cl.id = rl.id_cliente
-        where rl.id_campo = {$id_campo} and rl.activo = 1";
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresCampoNuevo');
+        //$acceder = true ;
 
-        $campo = $this->campo->where(['activo' => 1, 'id' => $id_campo])->first();
-        $clientes = $this->cliente->where(['activo' => 1])->findAll();
-        $toper = $this->topercaion->where(['activo' => 1])->findAll();
-        $rlaboreos = $this->db->query($query)->getResultArray();
-        $total = 0.00;
-        $litros = 0.00;
-        foreach ($rlaboreos as $row) {
-            $total += ($row['monto']);
-            $litros += ($row['litros']);
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+
+            $query = "SELECT rl.id,
+            rl.fecha,
+            rl.id_campo,
+            rl.id_operacion,
+            rl.detalle,
+            rl.monto, 
+            rl.litros,
+            op.nombre as tipo,
+            cl.id as idcliente,
+            cl.nombre as cliente
+            FROM rlaboreos rl 
+            INNER JOIN toperacion op 
+            ON op.id = rl.id_operacion
+            INNER JOIN clientes cl
+            ON cl.id = rl.id_cliente
+            where rl.id_campo = {$id_campo} and rl.activo = 1";
+
+            $campo = $this->campo->where(['activo' => 1, 'id' => $id_campo])->first();
+            $clientes = $this->cliente->where(['activo' => 1])->findAll();
+            $toper = $this->topercaion->where(['activo' => 1])->findAll();
+            $rlaboreos = $this->db->query($query)->getResultArray();
+            $total = 0.00;
+            $litros = 0.00;
+            foreach ($rlaboreos as $row) {
+                $total += ($row['monto']);
+                $litros += ($row['litros']);
+            }
+            $data = [
+                'titulo' => 'Agregar Laboreo', 'datos' => $rlaboreos, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
+                'litros' => $litros, 'toper' => $toper
+            ];
+
+            echo view('header');
+            echo view('rlaboreos/nuevo', $data);
+            echo view('footer');
         }
-        $data = [
-            'titulo' => 'Agregar Laboreo', 'datos' => $rlaboreos, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
-            'litros' => $litros, 'toper' => $toper
-        ];
-
-        echo view('header');
-        echo view('rlaboreos/nuevo', $data);
-        echo view('footer');
     }
 
     public function nuevo1()
@@ -235,44 +251,56 @@ class Rlaboreos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $query = "SELECT rl.id,
-        rl.fecha,
-        rl.id_campo,
-        rl.id_operacion,
-        rl.detalle,
-        rl.monto, 
-        rl.litros,
-        op.nombre as tipo,
-        cl.id as idcliente,
-        cl.nombre as cliente,
-        ca.nombre as campo
-        FROM rlaboreos rl 
-        INNER JOIN toperacion op 
-        ON op.id = rl.id_operacion
-        INNER JOIN clientes cl
-        ON cl.id = rl.id_cliente
-        INNER JOIN campos ca
-        ON ca.id = rl.id_campo
-        where rl.activo = 1";
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresNuevo');
+        //$acceder = true ;
 
-        $campo = $this->campo->where(['activo' => 1])->findAll();
-        $clientes = $this->cliente->where(['activo' => 1])->findAll();
-        $toper = $this->topercaion->where(['activo' => 1])->findAll();
-        $rlaboreos = $this->db->query($query)->getResultArray();
-        $total = 0.00;
-        $litros = 0.00;
-        foreach ($rlaboreos as $row) {
-            $total += ($row['monto']);
-            $litros += ($row['litros']);
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+
+            $query = "SELECT rl.id,
+            rl.fecha,
+            rl.id_campo,
+            rl.id_operacion,
+            rl.detalle,
+            rl.monto, 
+            rl.litros,
+            op.nombre as tipo,
+            cl.id as idcliente,
+            cl.nombre as cliente,
+            ca.nombre as campo
+            FROM rlaboreos rl 
+            INNER JOIN toperacion op 
+            ON op.id = rl.id_operacion
+            INNER JOIN clientes cl
+            ON cl.id = rl.id_cliente
+            INNER JOIN campos ca
+            ON ca.id = rl.id_campo
+            where rl.activo = 1";
+
+            $campo = $this->campo->where(['activo' => 1])->findAll();
+            $clientes = $this->cliente->where(['activo' => 1])->findAll();
+            $toper = $this->topercaion->where(['activo' => 1])->findAll();
+            $rlaboreos = $this->db->query($query)->getResultArray();
+            $total = 0.00;
+            $litros = 0.00;
+            foreach ($rlaboreos as $row) {
+                $total += ($row['monto']);
+                $litros += ($row['litros']);
+            }
+            $data = [
+                'titulo' => 'Agregar Laboreo', 'datos' => $rlaboreos, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
+                'litros' => $litros, 'toper' => $toper
+            ];
+
+            echo view('header');
+            echo view('rlaboreos/nuevo1', $data);
+            echo view('footer');
         }
-        $data = [
-            'titulo' => 'Agregar Laboreo', 'datos' => $rlaboreos, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
-            'litros' => $litros, 'toper' => $toper
-        ];
-
-        echo view('header');
-        echo view('rlaboreos/nuevo1', $data);
-        echo view('footer');
     }
 
 
@@ -470,44 +498,56 @@ class Rlaboreos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $rlabor = $this->rlaboreo->where(['id' => $id])->first();
-        $id_campo = $rlabor['id_campo'];
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresCampoEditar');
+        //$acceder = true ;
 
-        $query = "SELECT rl.id,
-        rl.fecha,
-        rl.id_campo,
-        rl.id_operacion,
-        rl.detalle,
-        rl.monto, 
-        rl.litros,
-        op.nombre as tipo,
-        cl.id as idcliente,
-        cl.nombre as cliente
-        FROM rlaboreos rl 
-        INNER JOIN toperacion op 
-        ON op.id = rl.id_operacion
-        INNER JOIN clientes cl
-        ON cl.id = rl.id_cliente
-        where rl.id = {$id_campo} and rl.activo = 1";
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
 
-        $campo = $this->campo->where(['activo' => 1, 'id' => $id_campo])->first();
-        $clientes = $this->cliente->where(['activo' => 1])->findAll();
-        $toper = $this->topercaion->where(['activo' => 1])->findAll();
-        $rlaboreos = $this->db->query($query)->getResultArray();
-        $total = 0.00;
-        $litros = 0.00;
-        foreach ($rlaboreos as $row) {
-            $total += ($row['monto']);
-            $litros += ($row['litros']);
+
+            $rlabor = $this->rlaboreo->where(['id' => $id])->first();
+            $id_campo = $rlabor['id_campo'];
+
+            $query = "SELECT rl.id,
+            rl.fecha,
+            rl.id_campo,
+            rl.id_operacion,
+            rl.detalle,
+            rl.monto, 
+            rl.litros,
+            op.nombre as tipo,
+            cl.id as idcliente,
+            cl.nombre as cliente
+            FROM rlaboreos rl 
+            INNER JOIN toperacion op 
+            ON op.id = rl.id_operacion
+            INNER JOIN clientes cl
+            ON cl.id = rl.id_cliente
+            where rl.id = {$id_campo} and rl.activo = 1";
+
+            $campo = $this->campo->where(['activo' => 1, 'id' => $id_campo])->first();
+            $clientes = $this->cliente->where(['activo' => 1])->findAll();
+            $toper = $this->topercaion->where(['activo' => 1])->findAll();
+            $rlaboreos = $this->db->query($query)->getResultArray();
+            $total = 0.00;
+            $litros = 0.00;
+            foreach ($rlaboreos as $row) {
+                $total += ($row['monto']);
+                $litros += ($row['litros']);
+            }
+            $data = [
+                'titulo' => 'Editar Labor', 'datos' => $rlabor, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
+                'litros' => $litros, 'toper' => $toper
+            ];
+
+            echo view('header');
+            echo view('rlaboreos/editar', $data);
+            echo view('footer');
         }
-        $data = [
-            'titulo' => 'Editar Labor', 'datos' => $rlabor, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
-            'litros' => $litros, 'toper' => $toper
-        ];
-
-        echo view('header');
-        echo view('rlaboreos/editar', $data);
-        echo view('footer');
     }
 
 
@@ -517,47 +557,59 @@ class Rlaboreos extends BaseController
             return redirect()->to(base_url());
         }
 
-        $rlabor = $this->rlaboreo->where(['id' => $id])->first();
-        $id_campo = $rlabor['id_campo'];
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresEditar');
+        //$acceder = true ;
 
-        $query = "SELECT rl.id,
-        rl.fecha,
-        rl.id_campo,
-        rl.id_operacion,
-        rl.detalle,
-        rl.monto, 
-        rl.litros,
-        op.nombre as tipo,
-        cl.id as idcliente,
-        cl.nombre as cliente,
-        ca.nombre as campo 
-        FROM rlaboreos rl 
-        INNER JOIN toperacion op 
-        ON op.id = rl.id_operacion
-        INNER JOIN clientes cl
-        ON cl.id = rl.id_cliente
-        INNER JOIN campos ca
-        ON ca.id = rl.id_campo
-        where  rl.activo = 1";
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
 
-        $campo = $this->campo->where(['activo' => 1])->findAll();
-        $clientes = $this->cliente->where(['activo' => 1])->findAll();
-        $toper = $this->topercaion->where(['activo' => 1])->findAll();
-        $rlaboreos = $this->db->query($query)->getResultArray();
-        $total = 0.00;
-        $litros = 0.00;
-        foreach ($rlaboreos as $row) {
-            $total += ($row['monto']);
-            $litros += ($row['litros']);
+
+            $rlabor = $this->rlaboreo->where(['id' => $id])->first();
+            $id_campo = $rlabor['id_campo'];
+
+            $query = "SELECT rl.id,
+            rl.fecha,
+            rl.id_campo,
+            rl.id_operacion,
+            rl.detalle,
+            rl.monto, 
+            rl.litros,
+            op.nombre as tipo,
+            cl.id as idcliente,
+            cl.nombre as cliente,
+            ca.nombre as campo 
+            FROM rlaboreos rl 
+            INNER JOIN toperacion op 
+            ON op.id = rl.id_operacion
+            INNER JOIN clientes cl
+            ON cl.id = rl.id_cliente
+            INNER JOIN campos ca
+            ON ca.id = rl.id_campo
+            where  rl.activo = 1";
+
+            $campo = $this->campo->where(['activo' => 1])->findAll();
+            $clientes = $this->cliente->where(['activo' => 1])->findAll();
+            $toper = $this->topercaion->where(['activo' => 1])->findAll();
+            $rlaboreos = $this->db->query($query)->getResultArray();
+            $total = 0.00;
+            $litros = 0.00;
+            foreach ($rlaboreos as $row) {
+                $total += ($row['monto']);
+                $litros += ($row['litros']);
+            }
+            $data = [
+                'titulo' => 'Editar Labor', 'datos' => $rlabor, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
+                'litros' => $litros, 'toper' => $toper
+            ];
+
+            echo view('header');
+            echo view('rlaboreos/editar1', $data);
+            echo view('footer');
         }
-        $data = [
-            'titulo' => 'Editar Labor', 'datos' => $rlabor, 'campo' => $campo, 'clientes' => $clientes, 'total' => $total,
-            'litros' => $litros, 'toper' => $toper
-        ];
-
-        echo view('header');
-        echo view('rlaboreos/editar1', $data);
-        echo view('footer');
     }
 
 
@@ -690,7 +742,7 @@ class Rlaboreos extends BaseController
             ON ca.id = rl.id_campo
             where rl.activo = 1";
 
-            $rlabor = $this->laboreo->where(['id'=>$id])->first() ;
+            $rlabor = $this->laboreo->where(['id' => $id])->first();
             $campo = $this->campo->where(['activo' => 1])->findAll();
             $clientes = $this->cliente->where(['activo' => 1])->findAll();
             $toper = $this->topercaion->where(['activo' => 1])->findAll();
@@ -719,12 +771,24 @@ class Rlaboreos extends BaseController
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
         }
-        $rlabor = $this->rlaboreo->where(['id' => $id_rlabor])->first();
-        $id_campo = $rlabor['id_campo'];
 
-        $this->rlaboreo->update($id_rlabor, ['activo' => 0]);
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresCampoEliminar');
+        //$acceder = true ;
 
-        return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $rlabor = $this->rlaboreo->where(['id' => $id_rlabor])->first();
+            $id_campo = $rlabor['id_campo'];
+
+            $this->rlaboreo->update($id_rlabor, ['activo' => 0]);
+
+            return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
+        }
     }
 
     public function restaurar($id_rlabor)
@@ -733,11 +797,75 @@ class Rlaboreos extends BaseController
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
         }
-        $rlabor = $this->rlaboreo->where(['id' => $id_rlabor])->first();
-        $id_campo = $rlabor['id_campo'];
 
-        $this->rlaboreo->update($id_rlabor, ['activo' => 1]);
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresCampoEliminar');
+        //$acceder = true ;
 
-        return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $rlabor = $this->rlaboreo->where(['id' => $id_rlabor])->first();
+            $id_campo = $rlabor['id_campo'];
+
+            $this->rlaboreo->update($id_rlabor, ['activo' => 1]);
+
+            return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
+        }
+    }
+
+    public function eliminar1($id_rlabor)
+    {
+
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresEliminar');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $rlabor = $this->rlaboreo->where(['id' => $id_rlabor])->first();
+            $id_campo = $rlabor['id_campo'];
+
+            $this->rlaboreo->update($id_rlabor, ['activo' => 0]);
+
+            return redirect()->to(base_url() . '/rlaboreos/index');
+        }
+    }
+
+    public function restaurar1($id_rlabor)
+    {
+
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresEliminar');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $rlabor = $this->rlaboreo->where(['id' => $id_rlabor])->first();
+            $id_campo = $rlabor['id_campo'];
+
+            $this->rlaboreo->update($id_rlabor, ['activo' => 1]);
+
+            return redirect()->to(base_url() . '/rlaboreos/index');
+        }
     }
 }

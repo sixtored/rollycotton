@@ -11,62 +11,64 @@ use CodeIgniter\Validation\Validation;
 class Ctactecli extends BaseController
 {
 
-    protected $ctactecli, $cliente, $accesos, $db ;
+    protected $ctactecli, $cliente, $accesos, $db;
     protected $reglas;
 
     public function __construct()
     {
-        $this->session = session() ;
+        $this->session = session();
         $this->ctactecli = new CtactecliModel();
-        $this->cliente = new ClientesModel() ;
-        $this->accesos = new DetalleModel() ;
+        $this->cliente = new ClientesModel();
+        $this->accesos = new DetalleModel();
         $this->db = \Config\Database::connect();
-       
+
         helper(['form']);
         $this->reglas = [
             'detalle' => ['rules' => 'required', 'errors' => ['required' => 'El campo *Detalle es obligatorio.']]
         ];
-        
     }
 
     public function index($id, $activo = 1)
     {
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol,'CuentaCorrienteCliente') ;
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'Clietesctacte');
         //$acceder = true ;
 
-        if (!$acceder){
-            echo 'No tienes permisos para este modulo' ;
-            echo view('header') ;
-		    echo view('notienepermiso');
-		    echo view('footer') ;
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
         } else {
-        
-        $cliente = $this->cliente->where(['activo'=>1,'id'=>$id])->first();
-        $ctactecli = $this->ctactecli->where('activo', $activo)->findAll();
-        $data = ['titulo' => 'ctactecli', 'datos' => $ctactecli, 'cliente'=>$cliente];
-        echo view('header');
-        echo view('ctactecli/index', $data);
-        echo view('footer');
+
+            $cliente = $this->cliente->where(['activo' => 1, 'id' => $id])->first();
+            $ctactecli = $this->ctactecli->where('activo', $activo)->findAll();
+            $data = ['titulo' => 'ctactecli', 'datos' => $ctactecli, 'cliente' => $cliente];
+            echo view('header');
+            echo view('ctactecli/index', $data);
+            echo view('footer');
         }
     }
 
     public function ctacli($id, $activo = 1)
     {
-        if(!isset($this->session->id_usuario)) {
-			return redirect()->to(base_url()) ;
-		}
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol,'CuentaCorrienteCliente') ;
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'Clientesctacte');
         //$acceder = true ;
 
-        if (!$acceder){
-            echo 'No tienes permisos para este modulo' ;
-            echo view('header') ;
-		    echo view('notienepermiso');
-		    echo view('footer') ;
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
         } else {
 
-        $query= "SELECT ct.id,
+            $query = "SELECT ct.id,
             ct.fch,
             ct.detalle,
             ct.debito,
@@ -76,29 +78,40 @@ class Ctactecli extends BaseController
             ct.origen,
             ct.tcomp,
             ct.id_comp
-            FROM ctactecli as ct where ct.cliente_id = {$id} and ct.activo = 1" ;
+            FROM ctactecli as ct where ct.cliente_id = {$id} and ct.activo = 1";
 
-        $cliente = $this->cliente->where(['activo'=>1,'id'=>$id])->first();
-        $ctactecli = $this->db->query($query)->getResultArray();
-        $saldo = 0.00 ;
-        foreach ($ctactecli as $row) {
-            $saldo += ($row['debito'] - $row['credito']) ;
+            $cliente = $this->cliente->where(['activo' => 1, 'id' => $id])->first();
+            $ctactecli = $this->db->query($query)->getResultArray();
+            $saldo = 0.00;
+            foreach ($ctactecli as $row) {
+                $saldo += ($row['debito'] - $row['credito']);
+            }
+            // $ctactecli = $this->ctactecli->where('activo', $activo)->findAll();
+            $data = ['titulo' => 'Cuenta Corriente', 'datos' => $ctactecli, 'cliente' => $cliente, 'saldo' => $saldo];
+            echo view('header');
+            echo view('ctactecli/index', $data);
+            echo view('footer');
         }
-       // $ctactecli = $this->ctactecli->where('activo', $activo)->findAll();
-        $data = ['titulo' => 'Cuenta Corriente', 'datos' => $ctactecli, 'cliente'=>$cliente, 'saldo'=>$saldo];
-        echo view('header');
-        echo view('ctactecli/index', $data);
-        echo view('footer');
-        }
-    }   
-    
-    
-    public function nuevo($id) {
-        if(!isset($this->session->id_usuario)) {
-			return redirect()->to(base_url()) ;
-		}
+    }
 
-        $query= "SELECT ct.id,
+
+    public function nuevo($id)
+    {
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteNuevo');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+
+            $query = "SELECT ct.id,
             ct.fch,
             ct.detalle,
             ct.debito,
@@ -106,48 +119,49 @@ class Ctactecli extends BaseController
             ct.origen,
             ct.tcomp,
             ct.id_comp
-            FROM ctactecli as ct where ct.cliente_id = {$id} and ct.activo = 1" ;
+            FROM ctactecli as ct where ct.cliente_id = {$id} and ct.activo = 1";
 
             $ctactecli = $this->db->query($query)->getResultArray();
-            $saldo = 0.00 ;
+            $saldo = 0.00;
             foreach ($ctactecli as $row) {
-                $saldo += ($row['debito'] - $row['credito']) ;
-            }    
+                $saldo += ($row['debito'] - $row['credito']);
+            }
 
-        $cliente = $this->cliente->where(['activo'=>1,'id'=>$id])->first();
-        $data = ['titulo' => 'Agregar','cliente'=> $cliente, 'saldo'=>$saldo] ;
-        echo view('header') ;
-        echo view('ctactecli/nuevo',$data) ;
-        echo view('footer') ;
+            $cliente = $this->cliente->where(['activo' => 1, 'id' => $id])->first();
+            $data = ['titulo' => 'Agregar', 'cliente' => $cliente, 'saldo' => $saldo];
+            echo view('header');
+            echo view('ctactecli/nuevo', $data);
+            echo view('footer');
+        }
     }
 
 
     public function insertar()
     {
-        if(!isset($this->session->id_usuario)) {
-			return redirect()->to(base_url()) ;
-		}
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
 
-        $cliente_id = $this->request->getPost('cliente_id') ;
-        $detalle = $this->request->getPost('detalle') ;
-        $importe = $this->request->getPost('importe') ;
-        $tipo = $this->request->getPost('tipo') ;
+        $cliente_id = $this->request->getPost('cliente_id');
+        $detalle = $this->request->getPost('detalle');
+        $importe = $this->request->getPost('importe');
+        $tipo = $this->request->getPost('tipo');
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
-            $debito = 0.00 ;
-            $credito = 0.00 ;
-            $tcomp = 0 ;
+            $debito = 0.00;
+            $credito = 0.00;
+            $tcomp = 0;
             $id_comp = 0;
-            $origen = 'MA' ;
+            $origen = 'MA';
             $fch = date('y/m/d H:i:s');
-            if ($tipo==1) {
-                $debito = $importe ;
-                } else {
-                    $credito = $importe ;
-                } 
+            if ($tipo == 1) {
+                $debito = $importe;
+            } else {
+                $credito = $importe;
+            }
 
             $this->ctactecli->save([
                 'cliente_id' => $cliente_id,
-                'fch' => $fch ,
+                'fch' => $fch,
                 'detalle' => $detalle,
                 '$origen' => $origen,
                 'tcomp' => $tcomp,
@@ -179,7 +193,7 @@ class Ctactecli extends BaseController
                 }
             }
             */  //HASTA AQUI PARA CARGAR MULTIPLES IMAGENES 
-/*
+            /*
                     $validacion = $this->validate([
                         'img_producto' => [
                             'uploaded[img_producto]',
@@ -203,10 +217,10 @@ class Ctactecli extends BaseController
                     }
                     */
 
-            return redirect()->to(base_url() . '/ctactecli/ctacli/'.$cliente_id);
+            return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
         } else {
 
-            $query= "SELECT ct.id,
+            $query = "SELECT ct.id,
             ct.fch,
             ct.detalle,
             ct.debito,
@@ -214,28 +228,42 @@ class Ctactecli extends BaseController
             ct.origen,
             ct.tcomp,
             ct.id_comp
-            FROM ctactecli as ct where ct.cliente_id = {$cliente_id} and ct.activo = 1" ;
+            FROM ctactecli as ct where ct.cliente_id = {$cliente_id} and ct.activo = 1";
 
             $ctactecli = $this->db->query($query)->getResultArray();
-            $saldo = 0.00 ;
+            $saldo = 0.00;
             foreach ($ctactecli as $row) {
-                $saldo += ($row['debito'] - $row['credito']) ;
-            }    
+                $saldo += ($row['debito'] - $row['credito']);
+            }
 
-        $cliente = $this->cliente->where(['activo'=>1,'id'=>$cliente_id])->first();
-        $data = ['titulo' => 'Agregar Mov. Cuenta Corriente','cliente'=> $cliente, 'saldo'=>$saldo,'validation'=>$this->validator] ;
-        echo view('header') ;
-        echo view('ctactecli/nuevo',$data) ;
-        echo view('footer') ;
+            $cliente = $this->cliente->where(['activo' => 1, 'id' => $cliente_id])->first();
+            $data = ['titulo' => 'Agregar Mov. Cuenta Corriente', 'cliente' => $cliente, 'saldo' => $saldo, 'validation' => $this->validator];
+            echo view('header');
+            echo view('ctactecli/nuevo', $data);
+            echo view('footer');
         }
     }
 
     public function editar($id, $valid = null)
     {
-        $ctactecli = $this->ctactecli->where('id', $id)->first();
-        $cliente_id = $ctactecli['cliente_id'] ;
-        $cliente = $this->cliente->where(['activo'=>1,'id'=>$cliente_id])->first();
-        $query= "SELECT ct.id,
+
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteEditar');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+            $ctactecli = $this->ctactecli->where('id', $id)->first();
+            $cliente_id = $ctactecli['cliente_id'];
+            $cliente = $this->cliente->where(['activo' => 1, 'id' => $cliente_id])->first();
+            $query = "SELECT ct.id,
             ct.fch,
             ct.detalle,
             ct.debito,
@@ -243,51 +271,52 @@ class Ctactecli extends BaseController
             ct.origen,
             ct.tcomp,
             ct.id_comp
-            FROM ctactecli as ct where ct.cliente_id = {$cliente_id} and ct.activo = 1" ;
+            FROM ctactecli as ct where ct.cliente_id = {$cliente_id} and ct.activo = 1";
 
             $ctamov = $this->db->query($query)->getResultArray();
-            $saldo = 0.00 ;
+            $saldo = 0.00;
             foreach ($ctamov as $row) {
-                $saldo += ($row['debito'] - $row['credito']) ;
-            }    
-        if ($valid != null) {
-            $data = [
-                'titulo' => 'Editar Mov. Cuenta Corriente', 'dato' => $ctactecli, 'cliente'=>$cliente,
-                'saldo'=>$saldo,'validation' => $valid
-            ];
-        } else {
-            $data = [
-                'titulo' => 'Editar Mov. Cuenta Corriente', 'dato' => $ctactecli, 'cliente'=>$cliente,
-                'saldo'=>$saldo
-            ];
+                $saldo += ($row['debito'] - $row['credito']);
+            }
+            if ($valid != null) {
+                $data = [
+                    'titulo' => 'Editar Mov. Cuenta Corriente', 'dato' => $ctactecli, 'cliente' => $cliente,
+                    'saldo' => $saldo, 'validation' => $valid
+                ];
+            } else {
+                $data = [
+                    'titulo' => 'Editar Mov. Cuenta Corriente', 'dato' => $ctactecli, 'cliente' => $cliente,
+                    'saldo' => $saldo
+                ];
+            }
+
+
+            echo view('header');
+            echo view('ctactecli/editar', $data);
+            echo view('footer');
         }
-
-
-        echo view('header');
-        echo view('ctactecli/editar', $data);
-        echo view('footer');
     }
 
     public function guardar()
     {
-        $id = $this->request->getPost('id') ;
-        $cliente_id = $this->request->getPost('cliente_id') ;
-        $detalle = $this->request->getPost('detalle') ;
-        $importe = $this->request->getPost('importe') ;
-        $tipo = $this->request->getPost('tipo') ;
-        $origen = $this->request->getPost('origen') ;
-      //  if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
-            $debito = 0.00 ;
-            $credito = 0.00 ;
-            $tcomp = 0 ;
-            $id_comp = 0;
-           
-            $fch = date('y/m/d H:i:s');
-            if ($tipo==1) {
-                $debito = $importe ;
-                } else {
-                    $credito = $importe ;
-                } 
+        $id = $this->request->getPost('id');
+        $cliente_id = $this->request->getPost('cliente_id');
+        $detalle = $this->request->getPost('detalle');
+        $importe = $this->request->getPost('importe');
+        $tipo = $this->request->getPost('tipo');
+        $origen = $this->request->getPost('origen');
+        //  if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
+        $debito = 0.00;
+        $credito = 0.00;
+        $tcomp = 0;
+        $id_comp = 0;
+
+        $fch = date('y/m/d H:i:s');
+        if ($tipo == 1) {
+            $debito = $importe;
+        } else {
+            $credito = $importe;
+        }
 
 
         $this->ctactecli->update(
@@ -303,27 +332,27 @@ class Ctactecli extends BaseController
                 'fch' => $fch
             ]
         );
-        return redirect()->to(base_url() . '/ctactecli/ctacli/'.$cliente_id);
+        return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
     }
 
 
-    public function eliminados($id, $activo = 0) {
+    public function eliminados($id, $activo = 0)
+    {
 
-        if(!isset($this->session->id_usuario)) {
-			return redirect()->to(base_url()) ;
-		}
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
 
-        $acceder = $this->accesos->verificapermisos($this->session->id_rol,'CuentaCorrienteCliente') ;
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteEliminar');
         //$acceder = true ;
 
-        if (!$acceder){
-            echo 'No tienes permisos para este modulo' ;
-            echo view('header') ;
-		    echo view('notienepermiso');
-		    echo view('footer') ;
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
         } else {
-
-        $query= "SELECT ct.id,
+            $query = "SELECT ct.id,
             ct.fch,
             ct.detalle,
             ct.debito,
@@ -333,37 +362,65 @@ class Ctactecli extends BaseController
             ct.origen,
             ct.tcomp,
             ct.id_comp
-            FROM ctactecli as ct where ct.cliente_id = {$id} and ct.activo = 0" ;
+            FROM ctactecli as ct where ct.cliente_id = {$id} and ct.activo = 0";
 
-        $cliente = $this->cliente->where(['activo'=>1,'id'=>$id])->first();
-        $ctactecli = $this->db->query($query)->getResultArray();
-        $saldo = 0.00 ;
-        foreach ($ctactecli as $row) {
-            $saldo += ($row['debito'] - $row['credito']) ;
+            $cliente = $this->cliente->where(['activo' => 1, 'id' => $id])->first();
+            $ctactecli = $this->db->query($query)->getResultArray();
+            $saldo = 0.00;
+            foreach ($ctactecli as $row) {
+                $saldo += ($row['debito'] - $row['credito']);
+            }
+            // $ctactecli = $this->ctactecli->where('activo', $activo)->findAll();
+            $data = ['titulo' => 'Eliminados Cuenta Corriente', 'datos' => $ctactecli, 'cliente' => $cliente, 'saldo' => $saldo];
+            echo view('header');
+            echo view('ctactecli/eliminados', $data);
+            echo view('footer');
         }
-       // $ctactecli = $this->ctactecli->where('activo', $activo)->findAll();
-        $data = ['titulo' => 'Eliminados Cuenta Corriente', 'datos' => $ctactecli, 'cliente'=>$cliente, 'saldo'=>$saldo];
-        echo view('header');
-        echo view('ctactecli/eliminados', $data);
-        echo view('footer');
+    }
+
+    public function eliminar($id)
+    {
+
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteEliminar');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+            $ctactecli = $this->ctactecli->where('id', $id)->first();
+            $cliente_id = $ctactecli['cliente_id'];
+            $this->ctactecli->update($id, ['activo' => 0]);
+            return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
         }
     }
 
-    public function eliminar($id){
+    public function restaurar($id)
+    {
 
-        $ctactecli = $this->ctactecli->where('id', $id)->first();
-        $cliente_id = $ctactecli['cliente_id'] ;
-        $this->ctactecli->update($id, ['activo'=> 0]);
-        return redirect()->to(base_url() .'/ctactecli/ctacli/'.$cliente_id) ;
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteEliminar');
+        //$acceder = true ;
+
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
+            $ctactecli = $this->ctactecli->where('id', $id)->first();
+            $cliente_id = $ctactecli['cliente_id'];
+            $this->ctactecli->update($id, ['activo' => 1]);
+            return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
+        }
     }
-
-    public function restaurar($id){
-
-        $ctactecli = $this->ctactecli->where('id', $id)->first();
-        $cliente_id = $ctactecli['cliente_id'] ;
-        $this->ctactecli->update($id, ['activo'=> 1]);
-        return redirect()->to(base_url() .'/ctactecli/ctacli/'.$cliente_id) ;
-    }
-
-
 }
