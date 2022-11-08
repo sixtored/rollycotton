@@ -12,7 +12,15 @@
 </div>
 </div>
 
+<script src="<?php echo base_url(); ?>/js/bootstrap.bundle.min.js"></script>
+<script src="<?php echo base_url(); ?>/js/scripts.js"></script>
 <script>
+
+
+const myModalEl = document.getElementById('modal-confirma')
+myModalEl.addEventListener('hidden.bs.modal', event => {
+  // do something...
+})
 
 $(".btn-ok").click(function(event) {
   var href= $(this).attr('href');
@@ -22,14 +30,10 @@ $(".btn-ok").click(function(event) {
 
 $('#modal-confirma').on('show.bs.modal', function(e) {
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-		
 		$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
 	}); 
 
 </script>
-
-<script src="<?php echo base_url(); ?>/js/bootstrap.bundle.min.js"></script>
-<script src="<?php echo base_url(); ?>/js/scripts.js"></script>
 
 <!--
 <script src="<?php echo base_url(); ?>/js/jquery-3.5.1.min.js"></script>

@@ -9,7 +9,15 @@
             <?php } ?>
 
             <form method="POST" action="<?php echo base_url(); ?>/usuarios/actuliza_contrasenia" autocomplete="off">
-                
+            <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-sm-6">
+                            <input class="form-control" id="iduser" name="iduser" type="hidden" value="<?php echo $dato['id']; ?>"/>
+                        </div>
+                        
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <div class="row">
                         <div class="col-12 col-sm-6">

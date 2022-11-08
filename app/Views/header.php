@@ -178,6 +178,8 @@ table>tbody>tr>td {
                                 <a class="nav-link" href="<?php echo base_url(); ?>/usuarios">Usuarios</a>
                                 <a class="nav-link" href="<?php echo base_url(); ?>/roles">Roles</a>
                                 <a class="nav-link" href="<?php echo base_url(); ?>/toperacion">Tipo Operaciones</a>
+                                <a class="nav-link" href="<?php echo base_url(); ?>/logs">Auditoria</a>
+
                                 <!--
                                 <a class="nav-link" href="<?php echo base_url(); ?>/cajas">Cajas</a>
                                 <a class="nav-link" href="<?php echo base_url(); ?>/respaldo">Respaldo</a>

@@ -32,6 +32,7 @@
                         <th>MONTO</th>
                         <th>LITROS</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +46,21 @@
                             <td ><?php echo $dato['detalle']; ?></td>
                             <td class="text-sm-end fw-bold"><?php echo $dato['monto']; ?></td>
                             <td class="text-sm-end fw-bold"><?php echo $dato['litros']; ?></td>
+                            <?php 
+                            $foto = 'images/rlaboreos/'.$dato['id'].'.jpeg' ;
+                            if (file_exists($foto)) {
+                            ?>
+                            <td><img src="<?php echo base_url().'/images/rlaboreos/'.$dato['id'].'.jpeg';?>" class="img-responsive" width="100"/>
+                            </td>
+                            <?php 
+                            } else {
+                            ?>    
+                            <td><img src="<?php echo base_url().'/images/logosr.png';?>" class="img-responsive" width="100"/>
+                            </td>
+                            <?php
+                            }
+                            ?>
+
                             <td>
                                 <a href="<?php echo base_url(); ?>/rlaboreos/editar1/<?php echo $dato['id']; ?>" title="Editar registro" class="btn btn-warning"><i class="far fa-edit"></i></a>    
                                 <a href="#" data-href="<?php echo base_url().'/rlaboreos/eliminar1/'. $dato['id']; ?>" data-bs-toggle="modal" 

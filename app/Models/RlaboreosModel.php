@@ -37,7 +37,7 @@ class RlaboreosModel extends Model {
         $this->update() ;
     }
 
-    public function total_productos(){
+    public function total_rlaboreos(){
        return  $this->where('activo',1)->countAllResults(); // conteo de filas
 
     }

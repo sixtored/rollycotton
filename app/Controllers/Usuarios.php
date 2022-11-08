@@ -263,9 +263,11 @@ class Usuarios extends BaseController
                 ]
             );
             $session = session();
+            if ($session->id_usuario == $this->request->getPost('id')) {
             $session->nombre = $this->request->getPost('nombre');
             $session->usuario =  $this->request->getPost('usuario');
-            return redirect()->to(base_url() . '/usuarios');
+            }
+            return redirect()->to(base_url().'/inicio');
         } else {
             return $this->editar($this->request->getPost('id'), $this->validator);
         }
@@ -359,7 +361,7 @@ class Usuarios extends BaseController
         return redirect()->to(base_url());
     }
 
-    public function cambiar_contrasenia($id_usuario)
+    public function cambiar_contrasenia($id)
     {
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
@@ -375,7 +377,7 @@ class Usuarios extends BaseController
             echo view('footer');
         } else {
 
-            $usuario = $this->usuarios->where('id', $id_usuario)->first();
+            $usuario = $this->usuarios->where('id', $id)->first();
 
             $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario];
             echo view('header');
@@ -386,16 +388,14 @@ class Usuarios extends BaseController
 
     public function actuliza_contrasenia()
     {
-
+            $iduser = $this->request->getPost('iduser') ;
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglascambia)) {
 
-            $session = session();
-            $id = $session->id_usuario;
             $hash = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
 
-            $this->usuarios->update($id, ['password' => $hash]);
+            $this->usuarios->update($iduser, ['password' => $hash]);
 
-            $usuario = $this->usuarios->where('id', $id)->first();
+            $usuario = $this->usuarios->where('id', $iduser)->first();
 
             $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario, 'mensaje' => 'Password modificada correctamente..'];
             echo view('header');
@@ -403,9 +403,7 @@ class Usuarios extends BaseController
             echo view('footer');
         } else {
 
-            $session = session();
-            $id = $session->id_usuario;
-            $usuario = $this->usuarios->where('id', $id)->first();
+            $usuario = $this->usuarios->where('id', $iduser)->first();
 
             $data = ['titulo' => 'Cambiar Password', 'dato' => $usuario, 'validation' => $this->validator];
             echo view('header');

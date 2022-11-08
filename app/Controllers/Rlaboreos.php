@@ -7,13 +7,14 @@ use App\Models\CamposModel;
 use App\Models\ClientesModel;
 use App\Models\RlaboreosModel;
 use App\Models\DetalleModel;
+use App\Models\LogsModel;
 use App\Models\ToperacionModel;
 use CodeIgniter\Validation\Validation;
 
 class Rlaboreos extends BaseController
 {
 
-    protected $session, $rlaboreo, $cliente, $accesos, $db, $campo, $topercaion;
+    protected $session, $rlaboreo, $cliente, $accesos, $db, $campo, $topercaion, $logs;
     protected $reglas;
 
     public function __construct()
@@ -24,6 +25,7 @@ class Rlaboreos extends BaseController
         $this->campo = new CamposModel();
         $this->topercaion = new ToperacionModel();
         $this->accesos = new DetalleModel();
+        $this->logs = new LogsModel() ;
         $this->db = \Config\Database::connect();
 
         helper(['form']);
@@ -32,7 +34,6 @@ class Rlaboreos extends BaseController
             'op_id' => ['rules' => 'required', 'errors' => ['required' => 'El campo *Operacion es obligatorio.']],
             'detalle' => ['rules' => 'required', 'errors' => ['required' => 'El campo *Detalle es obligatorio.']],
             'monto' => ['rules' => 'required', 'errors' => ['required' => 'El campo *monto es obligatorio.']],
-            'litros' => ['rules' => 'required', 'errors' => ['required' => 'El campo *litros es obligatorio.']],
             'id_campo' => ['rules' => 'required', 'errors' => ['required' => '*Es obligatorio seleccionar un campo.']]
         ];
     }
@@ -315,8 +316,7 @@ class Rlaboreos extends BaseController
         $monto = $this->request->getPost('monto');
         $litros = $this->request->getPost('litros');
         $op_id = $this->request->getPost('op_id');
-        $session = session();
-        $id_us = $session->id_usuario;
+        $id_us = $this->session->id_usuario;
 
         $fch = date('y/m/d H:i:s');
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
@@ -333,6 +333,22 @@ class Rlaboreos extends BaseController
             ]);
 
             $id_rlaboreo = $this->rlaboreo->InsertID();
+
+            /** Logs
+             * 
+             */
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'NUEVO' ;
+            $detalles = 'NUEVO REGISTRO LOBAREO,' . $id_rlaboreo ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
             /* PARA CARGAR MULTIPLES IMAGENES 
             if ($imagefile = $this->request->getFiles()) {
                 $contador = 1 ;
@@ -355,29 +371,47 @@ class Rlaboreos extends BaseController
                 }
             }
             */  //HASTA AQUI PARA CARGAR MULTIPLES IMAGENES 
-            /*
+            if (!$this->request->getFile('img_rlaboreo')) {
+            
                     $validacion = $this->validate([
                         'img_producto' => [
-                            'uploaded[img_producto]',
-                            'mime_in[img_producto,image/jpg,image/jpeg]',
-                            'max_size[img_producto, 4096]'
+                            'uploaded[img_rlaboreo]',
+                            'mime_in[img_rlaboreo,image/jpg,image/jpeg]',
+                            'max_size[img_rlaboreo, 8192]'
                         ]
                     ]);
 
                     if ($validacion) {
 
-                        $ruta_logo = "images/productos/".$id.".jpg";
+                        $ruta_logo = "images/rlaboreos/".$id_rlaboreo.".jpg";
                         if (file_exists($ruta_logo)) {
                             unlink($ruta_logo);
                         }
 
-                        $img = $this->request->getFile('img_producto');
-                        $img->move('./images/productos', $id.'.jpg');
+                        $img = $this->request->getFile('img_rlaboreo');
+                        $img->move('./images/rlaboreos', $id_rlaboreo.'.jpeg');
+
+                        $info=\Config\Services::image()->withFile($img)->getFile()->getProperties(true);
+                        $ancho=$info['width'];
+                        $alto=$info['height'];
+                        if (($ancho <> 300) OR ($alto <> 300)){
+                            $imagen=\Config\Services::image()
+                            ->withFile($img)
+                           // ->reorient()
+                            //->rotate(90)
+                            //->fit(250,250,'bottom-left')
+                            ->resize(300,300)
+                            //->crop(300,300,50,0)
+                            ->save($img);
+                        }
+
+
                     } else {
                         echo 'ERROR en validacion de la Imagen';
                         exit;
                     }
-                    */
+                }
+                    
             return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
         } else {
 
@@ -430,8 +464,8 @@ class Rlaboreos extends BaseController
         $monto = $this->request->getPost('monto');
         $litros = $this->request->getPost('litros');
         $op_id = $this->request->getPost('op_id');
-        $session = session();
-        $id_us = $session->id_usuario;
+        $img = $this->request->getFile('img_rlaboreo') ;
+        $id_us = $this->session->id_usuario;
 
         $fch = date('y/m/d H:i:s');
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
@@ -448,6 +482,46 @@ class Rlaboreos extends BaseController
             ]);
 
             $id_rlaboreo = $this->rlaboreo->InsertID();
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'NUEVO' ;
+            $detalles = 'NUEVO REGISTRO LOBAREO,' . $id_rlaboreo ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
+
+            if (empty($img->getname())) {
+            } else {
+                $validacion = $this->validate([
+                    'img_rlaboreo' => [
+                        'uploaded[img_rlaboreo]',
+                        'mime_in[img_rlaboreo,image/jpg,image/jpeg]',
+                        'max_size[img_rlaboreo, 4096]'
+                    ]
+                ]);
+
+                if ($validacion) {
+
+                    $ruta_logo = "images/rlaboreos/".$id_rlaboreo.".jpg";
+                    if (file_exists($ruta_logo)) {
+                        unlink($ruta_logo);
+                    }
+
+                    //$img = $this->request->getFile('img_rlaboreo');
+                    $img->move('./images/rlaboreos', $id_rlaboreo.'.jpeg', true);
+
+
+                } else {
+                    echo 'ERROR en validacion de la Imagen';
+                    exit;
+                }
+            }
 
             return redirect()->to(base_url() . '/rlaboreos/index');
         } else {
@@ -626,8 +700,8 @@ class Rlaboreos extends BaseController
         $monto = $this->request->getPost('monto');
         $litros = $this->request->getPost('litros');
         $op_id = $this->request->getPost('op_id');
-        $session = session();
-        $id_us = $session->id_usuario;
+        $img = $this->request->getFile('img_rlaboreo') ;
+        $id_us = $this->session->id_usuario;
 
         $fch = date('y/m/d H:i:s');
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
@@ -642,6 +716,46 @@ class Rlaboreos extends BaseController
                 'monto' => $monto,
                 'litros' => $litros,
             ]);
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'EDITA' ;
+            $detalles = 'EDITA REGISTRO LOBAREO,' . $id ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
+
+            if (empty($img->getname())) {
+            } else {
+                $validacion = $this->validate([
+                    'img_rlaboreo' => [
+                        'uploaded[img_rlaboreo]',
+                        'mime_in[img_rlaboreo,image/jpg,image/jpeg]',
+                        'max_size[img_rlaboreo, 4096]'
+                    ]
+                ]);
+
+                if ($validacion) {
+
+                    $ruta_logo = "images/rlaboreos/".$id.".jpg";
+                    if (file_exists($ruta_logo)) {
+                        unlink($ruta_logo);
+                    }
+
+                    //$img = $this->request->getFile('img_rlaboreo');
+                    $img->move('./images/rlaboreos', $id.'.jpeg', true);
+
+
+                } else {
+                    echo 'ERROR en validacion de la Imagen';
+                    exit;
+                }
+            }
 
             return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
         } else {
@@ -701,9 +815,11 @@ class Rlaboreos extends BaseController
         $monto = $this->request->getPost('monto');
         $litros = $this->request->getPost('litros');
         $op_id = $this->request->getPost('op_id');
-        $session = session();
-        $id_us = $session->id_usuario;
-
+        $id_us = $this->session->id_usuario;
+        $img = $this->request->getFile('img_rlaboreo') ;
+        //$nombre = $img->getname() ;
+       // var_dump($nombre) ;
+        //exit ;
         $fch = date('y/m/d H:i:s');
         if ($this->request->getMethod() == 'post' && $this->validate($this->reglas)) {
 
@@ -717,6 +833,62 @@ class Rlaboreos extends BaseController
                 'monto' => $monto,
                 'litros' => $litros,
             ]);
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'EDITA' ;
+            $detalles = 'EDITA REGISTRO LOBAREO,' . $id .','.$detalle ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
+
+           
+            if (empty($img->getname())) {
+            } else {
+                $validacion = $this->validate([
+                    'img_rlaboreo' => [
+                        'uploaded[img_rlaboreo]',
+                        'mime_in[img_rlaboreo,image/jpg,image/jpeg]',
+                        'max_size[img_rlaboreo, 4096]'
+                    ]
+                ]);
+
+                if ($validacion) {
+
+                    $ruta_logo = "images/rlaboreos/".$id.".jpg";
+                    if (file_exists($ruta_logo)) {
+                        unlink($ruta_logo);
+                    }
+
+                    //$img = $this->request->getFile('img_rlaboreo');
+                    $img->move('./images/rlaboreos', $id.'.jpeg', true);
+/** 
+                    $info=\Config\Services::image()->withFile($img)->getFile()->getProperties(true);
+                    $ancho=$info['width'];
+                    $alto=$info['height'];
+                    if (($ancho <> 150) OR ($alto <> 150)){
+                        $imagen=\Config\Services::image()
+                        ->withFile($img)
+                       // ->reorient()
+                        //->rotate(90)
+                        //->fit(250,250,'bottom-left')
+                        ->resize(300,300)
+                        //->crop(300,300,50,0)
+                        ->save($ruta_logo);
+                        
+                    }
+*/
+
+                } else {
+                    echo 'ERROR en validacion de la Imagen';
+                    exit;
+                }
+            }
 
             return redirect()->to(base_url() . '/rlaboreos/index');
         } else {
@@ -740,9 +912,9 @@ class Rlaboreos extends BaseController
             ON cl.id = rl.id_cliente
             INNER JOIN campos ca
             ON ca.id = rl.id_campo
-            where rl.activo = 1";
+            where rl.activo = 1 ";
 
-            $rlabor = $this->laboreo->where(['id' => $id])->first();
+            $rlabor = $this->rlaboreo->where(['id' => $id])->first();
             $campo = $this->campo->where(['activo' => 1])->findAll();
             $clientes = $this->cliente->where(['activo' => 1])->findAll();
             $toper = $this->topercaion->where(['activo' => 1])->findAll();
@@ -763,7 +935,6 @@ class Rlaboreos extends BaseController
             echo view('footer');
         }
     }
-
 
     public function eliminar($id_rlabor)
     {
@@ -786,6 +957,20 @@ class Rlaboreos extends BaseController
             $id_campo = $rlabor['id_campo'];
 
             $this->rlaboreo->update($id_rlabor, ['activo' => 0]);
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $id_us = $this->session->id_usuario ;
+            $evento = 'ELIMINA' ;
+            $detalles = 'ELIMINA REGISTRO LOBAREO,' . $id_rlabor ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
 
             return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
         }
@@ -812,6 +997,19 @@ class Rlaboreos extends BaseController
             $id_campo = $rlabor['id_campo'];
 
             $this->rlaboreo->update($id_rlabor, ['activo' => 1]);
+            $id_us = $this->session->id_usuario ;
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'RESTAURA' ;
+            $detalles = 'RESTAURA REGISTRO LOBAREO,' . $id_rlabor ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
 
             return redirect()->to(base_url() . '/rlaboreos/registro/' . $id_campo);
         }
@@ -839,6 +1037,20 @@ class Rlaboreos extends BaseController
 
             $this->rlaboreo->update($id_rlabor, ['activo' => 0]);
 
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'ELIMINA' ;
+            $id_us = $this->session->id_usuario ;
+            $detalles = 'ELIMINA REGISTRO LOBAREO,' . $id_rlabor  ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
+
             return redirect()->to(base_url() . '/rlaboreos/index');
         }
     }
@@ -864,6 +1076,20 @@ class Rlaboreos extends BaseController
             $id_campo = $rlabor['id_campo'];
 
             $this->rlaboreo->update($id_rlabor, ['activo' => 1]);
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'RESTAURA' ;
+            $id_us = $this->session->id_usuario ;
+            $detalles = 'RESTAURA REGISTRO LOBAREO,' . $id_rlabor  ;
+            $tipo = 'LABOREOS' ;
+            $this->logs->save([
+                'id_usuario' => $id_us,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
 
             return redirect()->to(base_url() . '/rlaboreos/index');
         }

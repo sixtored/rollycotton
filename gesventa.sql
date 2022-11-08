@@ -11,7 +11,7 @@
  Target Server Version : 50733
  File Encoding         : 65001
 
- Date: 15/10/2022 11:51:06
+ Date: 17/10/2022 16:56:04
 */
 
 SET NAMES utf8mb4;
@@ -244,7 +244,7 @@ CREATE TABLE `ctactecli`  (
   `updated_at` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   `deleted_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_spanish2_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_spanish2_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ctactecli
@@ -255,6 +255,7 @@ INSERT INTO `ctactecli` VALUES (3, 1, '2022-08-06 22:56:29', 0, 0, 'MA', 'DEUDA'
 INSERT INTO `ctactecli` VALUES (4, 1, '2022-08-20 12:16:12', 0, 0, '', 'PRUEBA DE DEBITO ', 500.00, 0.00, 1, '2022-08-08 10:55:05', '2022-08-20 12:16:12', NULL);
 INSERT INTO `ctactecli` VALUES (5, 1, '2022-08-20 12:16:00', 0, 0, '', 'SU PAGO efect', 0.00, 200.35, 1, '2022-08-08 11:01:08', '2022-08-20 12:16:00', NULL);
 INSERT INTO `ctactecli` VALUES (6, 1, '2022-10-13 16:49:30', 0, 0, NULL, 'LABOREO DE PRUEBA.. 111', 0.00, NULL, 1, '2022-10-13 16:49:30', '2022-10-13 16:49:30', NULL);
+INSERT INTO `ctactecli` VALUES (7, 1, '2022-10-17 13:16:47', 0, 0, NULL, 'Deuda', 2000.00, 0.00, 1, '2022-10-17 13:16:47', '2022-10-17 13:16:47', NULL);
 
 -- ----------------------------
 -- Table structure for detalle_roles_permisos
@@ -265,7 +266,7 @@ CREATE TABLE `detalle_roles_permisos`  (
   `id_rol` int(11) NULL DEFAULT NULL,
   `id_permiso` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 156 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 549 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of detalle_roles_permisos
@@ -274,23 +275,52 @@ INSERT INTO `detalle_roles_permisos` VALUES (33, 2, 3);
 INSERT INTO `detalle_roles_permisos` VALUES (34, 2, 10);
 INSERT INTO `detalle_roles_permisos` VALUES (35, 2, 11);
 INSERT INTO `detalle_roles_permisos` VALUES (36, 2, 12);
-INSERT INTO `detalle_roles_permisos` VALUES (139, 1, 1);
-INSERT INTO `detalle_roles_permisos` VALUES (140, 1, 2);
-INSERT INTO `detalle_roles_permisos` VALUES (141, 1, 3);
-INSERT INTO `detalle_roles_permisos` VALUES (142, 1, 4);
-INSERT INTO `detalle_roles_permisos` VALUES (143, 1, 5);
-INSERT INTO `detalle_roles_permisos` VALUES (144, 1, 6);
-INSERT INTO `detalle_roles_permisos` VALUES (145, 1, 10);
-INSERT INTO `detalle_roles_permisos` VALUES (146, 1, 11);
-INSERT INTO `detalle_roles_permisos` VALUES (147, 1, 12);
-INSERT INTO `detalle_roles_permisos` VALUES (148, 1, 14);
-INSERT INTO `detalle_roles_permisos` VALUES (149, 1, 15);
-INSERT INTO `detalle_roles_permisos` VALUES (150, 1, 16);
-INSERT INTO `detalle_roles_permisos` VALUES (151, 1, 17);
-INSERT INTO `detalle_roles_permisos` VALUES (152, 1, 18);
-INSERT INTO `detalle_roles_permisos` VALUES (153, 1, 20);
-INSERT INTO `detalle_roles_permisos` VALUES (154, 1, 21);
-INSERT INTO `detalle_roles_permisos` VALUES (155, 1, 22);
+INSERT INTO `detalle_roles_permisos` VALUES (422, 3, 35);
+INSERT INTO `detalle_roles_permisos` VALUES (423, 3, 47);
+INSERT INTO `detalle_roles_permisos` VALUES (424, 3, 48);
+INSERT INTO `detalle_roles_permisos` VALUES (506, 1, 1);
+INSERT INTO `detalle_roles_permisos` VALUES (507, 1, 2);
+INSERT INTO `detalle_roles_permisos` VALUES (508, 1, 3);
+INSERT INTO `detalle_roles_permisos` VALUES (509, 1, 4);
+INSERT INTO `detalle_roles_permisos` VALUES (510, 1, 5);
+INSERT INTO `detalle_roles_permisos` VALUES (511, 1, 6);
+INSERT INTO `detalle_roles_permisos` VALUES (512, 1, 10);
+INSERT INTO `detalle_roles_permisos` VALUES (513, 1, 11);
+INSERT INTO `detalle_roles_permisos` VALUES (514, 1, 12);
+INSERT INTO `detalle_roles_permisos` VALUES (515, 1, 14);
+INSERT INTO `detalle_roles_permisos` VALUES (516, 1, 15);
+INSERT INTO `detalle_roles_permisos` VALUES (517, 1, 16);
+INSERT INTO `detalle_roles_permisos` VALUES (518, 1, 17);
+INSERT INTO `detalle_roles_permisos` VALUES (519, 1, 18);
+INSERT INTO `detalle_roles_permisos` VALUES (520, 1, 19);
+INSERT INTO `detalle_roles_permisos` VALUES (521, 1, 20);
+INSERT INTO `detalle_roles_permisos` VALUES (522, 1, 21);
+INSERT INTO `detalle_roles_permisos` VALUES (523, 1, 22);
+INSERT INTO `detalle_roles_permisos` VALUES (524, 1, 23);
+INSERT INTO `detalle_roles_permisos` VALUES (525, 1, 24);
+INSERT INTO `detalle_roles_permisos` VALUES (526, 1, 25);
+INSERT INTO `detalle_roles_permisos` VALUES (527, 1, 26);
+INSERT INTO `detalle_roles_permisos` VALUES (528, 1, 27);
+INSERT INTO `detalle_roles_permisos` VALUES (529, 1, 28);
+INSERT INTO `detalle_roles_permisos` VALUES (530, 1, 29);
+INSERT INTO `detalle_roles_permisos` VALUES (531, 1, 30);
+INSERT INTO `detalle_roles_permisos` VALUES (532, 1, 31);
+INSERT INTO `detalle_roles_permisos` VALUES (533, 1, 32);
+INSERT INTO `detalle_roles_permisos` VALUES (534, 1, 33);
+INSERT INTO `detalle_roles_permisos` VALUES (535, 1, 34);
+INSERT INTO `detalle_roles_permisos` VALUES (536, 1, 35);
+INSERT INTO `detalle_roles_permisos` VALUES (537, 1, 36);
+INSERT INTO `detalle_roles_permisos` VALUES (538, 1, 37);
+INSERT INTO `detalle_roles_permisos` VALUES (539, 1, 38);
+INSERT INTO `detalle_roles_permisos` VALUES (540, 1, 39);
+INSERT INTO `detalle_roles_permisos` VALUES (541, 1, 40);
+INSERT INTO `detalle_roles_permisos` VALUES (542, 1, 41);
+INSERT INTO `detalle_roles_permisos` VALUES (543, 1, 42);
+INSERT INTO `detalle_roles_permisos` VALUES (544, 1, 43);
+INSERT INTO `detalle_roles_permisos` VALUES (545, 1, 44);
+INSERT INTO `detalle_roles_permisos` VALUES (546, 1, 45);
+INSERT INTO `detalle_roles_permisos` VALUES (547, 1, 46);
+INSERT INTO `detalle_roles_permisos` VALUES (548, 1, 51);
 
 -- ----------------------------
 -- Table structure for grupos
@@ -324,7 +354,7 @@ CREATE TABLE `logs`  (
   `created_at` timestamp(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   `detalles` varchar(200) CHARACTER SET utf8 COLLATE utf8_spanish_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 54 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 65 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of logs
@@ -382,6 +412,17 @@ INSERT INTO `logs` VALUES (50, 1, 'Inicio de session', '::1', '2022-10-14 06:43:
 INSERT INTO `logs` VALUES (51, 1, 'Inicio de session', '::1', '2022-10-14 10:30:46', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
 INSERT INTO `logs` VALUES (52, 1, 'Inicio de session', '::1', '2022-10-14 15:54:53', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
 INSERT INTO `logs` VALUES (53, 1, 'Inicio de session', '::1', '2022-10-14 20:01:03', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (54, 1, 'Inicio de session', '::1', '2022-10-16 08:12:28', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (55, 1, 'Inicio de session', '::1', '2022-10-16 08:23:21', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (56, 1, 'Inicio de session', '::1', '2022-10-16 18:51:49', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (57, 1, 'Inicio de session', '::1', '2022-10-16 21:27:55', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (58, 1, 'Inicio de session', '::1', '2022-10-16 21:31:30', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (59, 1, 'Inicio de session', '::1', '2022-10-16 21:34:12', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (60, 1, 'Inicio de session', '::1', '2022-10-17 07:54:44', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (61, 3, 'Inicio de session', '::1', '2022-10-17 10:52:23', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (62, 1, 'Inicio de session', '::1', '2022-10-17 10:54:25', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (63, 3, 'Inicio de session', '::1', '2022-10-17 10:55:06', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+INSERT INTO `logs` VALUES (64, 1, 'Inicio de session', '::1', '2022-10-17 13:03:17', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
 
 -- ----------------------------
 -- Table structure for permisos
@@ -392,7 +433,7 @@ CREATE TABLE `permisos`  (
   `nombre` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NULL DEFAULT NULL,
   `tipo` int(8) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 54 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of permisos
@@ -414,11 +455,42 @@ INSERT INTO `permisos` VALUES (14, 'UnidadesEliminados', 3);
 INSERT INTO `permisos` VALUES (15, 'SubCategorias', 2);
 INSERT INTO `permisos` VALUES (16, 'CategoriasCatalogo', 3);
 INSERT INTO `permisos` VALUES (17, 'CategoriasNuevo', 3);
-INSERT INTO `permisos` VALUES (18, 'CaegoriasEliminados', 3);
-INSERT INTO `permisos` VALUES (19, 'CategoriasEditar', 3);
-INSERT INTO `permisos` VALUES (20, 'MenuClientes', 1);
-INSERT INTO `permisos` VALUES (21, 'ClientesCatalogo', 3);
-INSERT INTO `permisos` VALUES (22, 'CuentaCorrienteCliente', 3);
+INSERT INTO `permisos` VALUES (18, 'ClientesEliminar', 3);
+INSERT INTO `permisos` VALUES (19, 'Clientesctacte', 3);
+INSERT INTO `permisos` VALUES (20, 'ClientesLista', 1);
+INSERT INTO `permisos` VALUES (21, 'ClientesNuevo', 3);
+INSERT INTO `permisos` VALUES (22, 'ClientesEditar', 3);
+INSERT INTO `permisos` VALUES (23, 'UsuariosLista', NULL);
+INSERT INTO `permisos` VALUES (24, 'UsuariosCambiarContrasenia', NULL);
+INSERT INTO `permisos` VALUES (25, 'UsuariosEditar', NULL);
+INSERT INTO `permisos` VALUES (26, 'UsuariosPerfil', NULL);
+INSERT INTO `permisos` VALUES (27, 'RolesLista', NULL);
+INSERT INTO `permisos` VALUES (28, 'RolesNuevo', NULL);
+INSERT INTO `permisos` VALUES (29, 'RolesEditar', NULL);
+INSERT INTO `permisos` VALUES (30, 'RolesPermisos', NULL);
+INSERT INTO `permisos` VALUES (31, 'GruposLista', NULL);
+INSERT INTO `permisos` VALUES (32, 'GruposNuevo', NULL);
+INSERT INTO `permisos` VALUES (33, 'GruposEditar', NULL);
+INSERT INTO `permisos` VALUES (34, 'GruposEliminar', NULL);
+INSERT INTO `permisos` VALUES (35, 'CamposLista', NULL);
+INSERT INTO `permisos` VALUES (36, 'CamposNuevo', NULL);
+INSERT INTO `permisos` VALUES (37, 'CamposEditar', NULL);
+INSERT INTO `permisos` VALUES (38, 'CamposEliminar', NULL);
+INSERT INTO `permisos` VALUES (39, 'ToperacionLista', NULL);
+INSERT INTO `permisos` VALUES (40, 'ToperacionNuevo', NULL);
+INSERT INTO `permisos` VALUES (41, 'ToperacionEditar', NULL);
+INSERT INTO `permisos` VALUES (42, 'ToperacionEliminar', NULL);
+INSERT INTO `permisos` VALUES (43, 'LaboresLista', NULL);
+INSERT INTO `permisos` VALUES (44, 'LaboresNuevo', NULL);
+INSERT INTO `permisos` VALUES (45, 'LaboresEditar', NULL);
+INSERT INTO `permisos` VALUES (46, 'LaboresEliminar', NULL);
+INSERT INTO `permisos` VALUES (47, 'LaboresCampo', NULL);
+INSERT INTO `permisos` VALUES (48, 'LaboresCampoNuevo', NULL);
+INSERT INTO `permisos` VALUES (49, 'LaboresCampoEditar', NULL);
+INSERT INTO `permisos` VALUES (50, 'LaboresCampoEliminar', NULL);
+INSERT INTO `permisos` VALUES (51, 'CtacteNuevo', NULL);
+INSERT INTO `permisos` VALUES (52, 'CtacteEditar', NULL);
+INSERT INTO `permisos` VALUES (53, 'CtacteEliminar', NULL);
 
 -- ----------------------------
 -- Table structure for productos
@@ -502,13 +574,14 @@ CREATE TABLE `roles`  (
   `activo` tinyint(1) NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `nombre`(`nombre`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of roles
 -- ----------------------------
 INSERT INTO `roles` VALUES (1, 'Administrador ', 'admin', 'Control total', '2021-07-26 21:21:27', '2021-08-16 21:04:46', 1);
 INSERT INTO `roles` VALUES (2, 'Vendedor ', 'Cajero', 'Venta de productos al mostrador', '2021-08-18 22:37:40', '2021-08-18 22:37:40', 1);
+INSERT INTO `roles` VALUES (3, 'Laboreos ', 'labor', 'Cargar labores en campo', '2022-10-17 10:51:37', '2022-10-17 10:51:37', 1);
 
 -- ----------------------------
 -- Table structure for tdocu
@@ -689,13 +762,14 @@ CREATE TABLE `usuarios`  (
   INDEX `fk_idrol`(`id_rol`) USING BTREE,
   CONSTRAINT `fk_idcaja` FOREIGN KEY (`id_caja`) REFERENCES `cajas` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_idrol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of usuarios
 -- ----------------------------
-INSERT INTO `usuarios` VALUES (1, 'sixtored', 'Sixto Ramon E. Diaz', 'sixtod@gmail.com', '$2y$10$mxqw7DfrBGsL/xZR8.93geTiTeRmZEOcQzqPF2pT45vbHhTP7EZ42', 1, '2021-08-17 15:45:39', '2022-08-05 09:15:37', 2, 1);
+INSERT INTO `usuarios` VALUES (1, 'sixtored', 'Sixto', 'sixtod@gmail.com', '$2y$10$JfZhV4nNUBbKDB7tZbEdo.LuGosEL6IgTlryRny0rNN10yfpcB/Dy', 1, '2021-08-17 15:45:39', '2022-10-16 08:50:42', 2, 1);
 INSERT INTO `usuarios` VALUES (2, 'sixtod', 'Sixto Diaz', 'sixtod@gmail.com', '$2y$10$jgMyT8PuG6nYiOfqvqT4EORYEv9CwkTBtMwT95OEwl7Q6KBEA5jPi', 1, '2021-08-17 20:29:29', '2022-07-18 11:55:20', 1, 2);
+INSERT INTO `usuarios` VALUES (3, 'nuevo', 'nuevo 12345', 'nuevo@email.com', '$2y$10$vGTEuxZaIh.7YJaxWaLNeuyzlLRNOB2LbzbfDMyR67Ipyv5SFxDxW', 1, '2022-10-17 10:50:48', '2022-10-17 10:54:55', 1, 3);
 
 -- ----------------------------
 -- Table structure for ventas

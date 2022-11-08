@@ -70,8 +70,19 @@
                             <input class="form-control" id="monto" name="monto" type="text" value="<?= set_value('monto') ?>" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <label>*LITROS</label>
+                            <label>LITROS</label>
                             <input class="form-control" id="litros" name="litros" type="text" value="<?= set_value('litros') ?>" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6 col-sm-4">
+                        <label>Foto</label><br>
+                       
+                        <input type="file" id="img_rlaboreo" name="img_rlaboreo" accept="image/*"/>
+                        <p class="text-danger">cargar imagen en formato jpg/jpeg Maximo 400 x 400 pixeles</p> 
                         </div>
                     </div>
                 </div>

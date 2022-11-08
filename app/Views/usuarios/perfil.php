@@ -8,7 +8,7 @@
                 </div>
             <?php } ?>
 
-            <form method="POST" action="<?php echo base_url(); ?>/usuarios/guardar1" autocomplete="off">
+            <form method="POST" action="<?php echo base_url(); ?>/usuarios/guardar" autocomplete="off">
                 <input type="hidden" value="<?php echo $dato['id']; ?>" name="id" />
                 <input type="hidden" value="<?php echo $dato['id_caja']; ?>" name="id_caja" />
                 <input type="hidden" value="<?php echo $dato['id_rol']; ?>" name="id_rol" />

@@ -15,6 +15,7 @@
                         <th>usuario</th>
                         <th>nombre</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,6 +28,9 @@
                                 <a href="<?php echo base_url(); ?>/usuarios/editar/<?php echo $dato['id']; ?>" title="Editar perfil" class="btn btn-warning"><i class="far fa-edit"></i></a>    
                                 <a href="#" data-href="<?php echo base_url().'/usuarios/eliminar/'. $dato['id']; ?>" data-bs-toggle="modal" 
                                 data-bs-target="#modal-confirma" title="Eliminar Registro" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+                            </td>
+                            <td>
+                            <a href="<?php echo base_url(); ?>/usuarios/cambiar_contrasenia/<?=$dato['id'] ;?>" title="Cambiar Contraseña" class="btn btn-primary"><i class="fas fa-key"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

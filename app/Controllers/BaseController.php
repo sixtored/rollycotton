@@ -55,4 +55,8 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.: $this->session = \Config\Services::session();
 	}
+
+	//function ZonaHoraria(){
+	//	return   date_default_timezone_set('America/Argentina/Buenos_Aires');
+	//}
 }

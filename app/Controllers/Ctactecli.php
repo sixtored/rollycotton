@@ -74,7 +74,7 @@ class Ctactecli extends BaseController
             ct.debito,
             ct.credito,
             (SELECT sum(ct1.debito) - sum(ct1.credito) as saldo
-            FROM ctactecli as ct1 WHERE ct1.id <= ct.id and ct1.activo = 1) as saldo,
+            FROM ctactecli as ct1 WHERE ct1.id <= ct.id and ct1.activo = 1 and ct1.cliente_id = {$id}) as saldo,
             ct.origen,
             ct.tcomp,
             ct.id_comp
@@ -358,7 +358,7 @@ class Ctactecli extends BaseController
             ct.debito,
             ct.credito,
             (SELECT sum(ct1.debito) - sum(ct1.credito) as saldo
-            FROM ctactecli as ct1 WHERE ct1.id <= ct.id and ct1.activo = 0) as saldo,
+            FROM ctactecli as ct1 WHERE ct1.id <= ct.id and ct1.activo = 0 and ct1.cliente_id = {$id}) as saldo,
             ct.origen,
             ct.tcomp,
             ct.id_comp

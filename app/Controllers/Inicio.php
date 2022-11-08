@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ProductosModel ;
+use App\Models\RlaboreosModel;
 use App\Models\VentasModel ;
 use PhpOffice\PhpSpreadsheet\Spreadsheet ;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -11,12 +12,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Inicio extends BaseController
 {
 
-	protected $productosModel, $ventasModel, $session ;
+	protected $productosModel, $ventasModel, $rlaboreos, $session ;
 	
 	public function __construct()
 	{
 		$this->productosModel = new ProductosModel() ;
 		$this->ventasModel = new VentasModel() ;
+        $this->rlaboreos = new RlaboreosModel() ;
 		$this->session = session() ;
 	}
 
@@ -30,7 +32,8 @@ class Inicio extends BaseController
 		$tproductos = $this->productosModel->total_productos() ;
 		$ventasdia = $this->ventasModel->ventas_del_dia(date('Y-m-d'),$id_usuario) ;
 		$pstock_min = $this->productosModel->productosSminimo() ;
-		$datos = ['tproductos'=>$tproductos,'ventasdia'=>$ventasdia, 'pstock_min' => $pstock_min] ;
+        $trlaboreos = $this->rlaboreos->total_rlaboreos() ;
+		$datos = ['trlaboreos'=>$trlaboreos,'ventasdia'=>$ventasdia, 'pstock_min' => $pstock_min] ;
 		echo view('header') ;
 		echo view('inicio', $datos);
 		echo view('footer') ;
