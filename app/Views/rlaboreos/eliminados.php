@@ -33,7 +33,7 @@
                             <td class="text-sm-end fw-bold"><?php echo $dato['monto']; ?></td>
                             <td class="text-sm-end fw-bold"><?php echo $dato['litros']; ?></td>
                             <td>
-                                <a href="#" data-href="<?php echo base_url() . '/rlaboreos/restaurar/' . $dato['id']; ?>" data-bs-toggle="modal" data-bs-target="#modal-confirma" title="Restaurar Registro" class="btn btn-success"><i class="far fa-trash-alt"></i></a>
+                                <a href="#" data-href="<?php echo base_url() . '/rlaboreos/restaurar1/' . $dato['id']; ?>" data-bs-toggle="modal" data-bs-target="#modal-confirma" title="Restaurar Registro" class="btn btn-success"><i class="far fa-trash-alt"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
