@@ -11,7 +11,7 @@ use CodeIgniter\Validation\Validation;
 class Ctactecli extends BaseController
 {
 
-    protected $ctactecli, $cliente, $accesos, $db;
+    protected $ctactecli, $cliente, $accesos, $db, $query, $collumns ;
     protected $reglas;
 
     public function __construct()
@@ -21,6 +21,25 @@ class Ctactecli extends BaseController
         $this->cliente = new ClientesModel();
         $this->accesos = new DetalleModel();
         $this->db = \Config\Database::connect();
+
+               /* AGREGAMOS CAMPOS FALTANTES EN LA BASE CTACTECLI
+        */
+        $query = "SHOW COLUMNS FROM `ctactecli` WHERE Field = 'id_rlabor'" ;
+        $collumns = $this->db->query($query)->getNumRows() ;
+        if ($collumns == 0) {
+            $query =   "ALTER TABLE ctactecli ADD id_rlabor INT(11) DEFAULT 0 AFTER activo" ;
+            $this->db->query($query) ;
+        }
+
+             /* AGREGAMOS CAMPOS FALTANTES EN LA BASE CTACTECLI
+        */
+        $query = "SHOW COLUMNS FROM `ctactecli` WHERE Field = 'id_usuario'" ;
+        $collumns = $this->db->query($query)->getNumRows() ;
+        if ($collumns == 0) {
+            $query =   "ALTER TABLE ctactecli ADD id_usuario INT(11) DEFAULT 0 AFTER activo" ;
+            $this->db->query($query) ;
+        }
+
 
         helper(['form']);
         $this->reglas = [
@@ -142,6 +161,7 @@ class Ctactecli extends BaseController
             return redirect()->to(base_url());
         }
 
+        $id_usuario = $this->session->id_usuario ;
         $cliente_id = $this->request->getPost('cliente_id');
         $detalle = $this->request->getPost('detalle');
         $importe = $this->request->getPost('importe');
@@ -161,6 +181,7 @@ class Ctactecli extends BaseController
 
             $this->ctactecli->save([
                 'cliente_id' => $cliente_id,
+                'id_usuario' => $id_usuario,
                 'fch' => $fch,
                 'detalle' => $detalle,
                 '$origen' => $origen,
@@ -171,6 +192,19 @@ class Ctactecli extends BaseController
             ]);
 
             $id_ctactecli = $this->ctactecli->InsertID();
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'NUEVO';
+            $detalles = 'NUEVO REGISTRO CTACTE,' . $id_ctactecli;
+            $tipo = 'CTACTE';
+            $this->logs->save([
+                'id_usuario' => $id_usuario,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
             /* PARA CARGAR MULTIPLES IMAGENES 
             if ($imagefile = $this->request->getFiles()) {
                 $contador = 1 ;
@@ -299,6 +333,7 @@ class Ctactecli extends BaseController
 
     public function guardar()
     {
+        $id_usuario = $this->session->id_usuario ;
         $id = $this->request->getPost('id');
         $cliente_id = $this->request->getPost('cliente_id');
         $detalle = $this->request->getPost('detalle');
@@ -323,6 +358,7 @@ class Ctactecli extends BaseController
             $id,
             [
                 'cliente_id' => $cliente_id,
+                'id_usuario' => $id_usuario, 
                 'detalle' => $detalle,
                 'tcomp' => $tcomp,
                 'id_comp' => $id_comp,
@@ -332,6 +368,20 @@ class Ctactecli extends BaseController
                 'fch' => $fch
             ]
         );
+
+        $ip = $_SERVER['REMOTE_ADDR'];
+        // obtiene ip
+        $evento = 'EDITA';
+        $detalles = 'EDITA REGISTRO CTACTE,' . $id;
+        $tipo = 'CTACTE';
+        $this->logs->save([
+            'id_usuario' => $id_usuario,
+            'evento' => $evento,
+            'ip' => $ip,
+            'detalles' => $detalles,
+            'tipo' => $tipo
+        ]);
+
         return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
     }
 
@@ -384,7 +434,7 @@ class Ctactecli extends BaseController
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
         }
-
+        $id_usuario = $this->session->id_usario ;
         $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteEliminar');
         //$acceder = true ;
 
@@ -397,6 +447,21 @@ class Ctactecli extends BaseController
             $ctactecli = $this->ctactecli->where('id', $id)->first();
             $cliente_id = $ctactecli['cliente_id'];
             $this->ctactecli->update($id, ['activo' => 0]);
+
+
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'ELIMINA';
+            $detalles = 'ELIMINA REGISTRO CTACTE,' . $id;
+            $tipo = 'CTACTE';
+            $this->logs->save([
+                'id_usuario' => $id_usuario,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
+
             return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
         }
     }
@@ -407,7 +472,7 @@ class Ctactecli extends BaseController
         if (!isset($this->session->id_usuario)) {
             return redirect()->to(base_url());
         }
-
+        $id_usuario = $this->session->id_usario ;
         $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'CtacteEliminar');
         //$acceder = true ;
 
@@ -420,6 +485,19 @@ class Ctactecli extends BaseController
             $ctactecli = $this->ctactecli->where('id', $id)->first();
             $cliente_id = $ctactecli['cliente_id'];
             $this->ctactecli->update($id, ['activo' => 1]);
+            
+            $ip = $_SERVER['REMOTE_ADDR'];
+            // obtiene ip
+            $evento = 'RESTURA';
+            $detalles = 'RESTAURA REGISTRO CTACTE,' . $id;
+            $tipo = 'CTACTE';
+            $this->logs->save([
+                'id_usuario' => $id_usuario,
+                'evento' => $evento,
+                'ip' => $ip,
+                'detalles' => $detalles,
+                'tipo' => $tipo
+            ]);
             return redirect()->to(base_url() . '/ctactecli/ctacli/' . $cliente_id);
         }
     }

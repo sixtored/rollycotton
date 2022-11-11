@@ -14,7 +14,7 @@ class CtactecliModel extends Model {
     protected $useSoftDeletes = false;
 
     protected $allowedFields = ['cliente_id','fch', 'tcomp', 'id_comp', 'origen', 
-    'detalle', 'debito', 'credito', 'activo'];
+    'detalle', 'debito', 'credito', 'activo','id_rlabor', 'id_usuario'];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';

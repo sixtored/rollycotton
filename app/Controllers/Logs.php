@@ -10,7 +10,7 @@ use App\Models\UsuariosModel;
 class Logs extends BaseController
 {
 
-    protected $logs, $usuarios, $session, $accesos, $db;
+    protected $logs, $usuarios, $session, $accesos, $db, $query, $collumns;
 
     public function __construct()
     {
@@ -28,6 +28,7 @@ class Logs extends BaseController
             $query =   "ALTER TABLE logs ADD tipo VARCHAR(50) DEFAULT '' AFTER detalles" ;
             $this->db->query($query) ;
         }
+
 
     }
 

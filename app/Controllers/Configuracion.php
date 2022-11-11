@@ -29,6 +29,18 @@ class Configuracion extends BaseController
     {
         /*
         $configuracion = $this->configuracion->where('activo',$activo)->findAll() ;*/
+        if (!isset($this->session->id_usuario)) {
+            return redirect()->to(base_url());
+        }
+
+        $acceder = $this->accesos->verificapermisos($this->session->id_rol, 'LaboresCampo');
+        //$acceder = true ;
+        if (!$acceder) {
+            echo 'No tienes permisos para este modulo';
+            echo view('header');
+            echo view('notienepermiso');
+            echo view('footer');
+        } else {
 
         $nombre = $this->configuracion->where('nombre', 'tienda_nombre')->first();
         $telfono = $this->configuracion->where('nombre', 'tienda_telefono')->first();
@@ -45,6 +57,7 @@ class Configuracion extends BaseController
         echo view('header');
         echo view('configuracion/index', $data);
         echo view('footer');
+        }
     }
 
     public function guardar()

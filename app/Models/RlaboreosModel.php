@@ -14,7 +14,7 @@ class RlaboreosModel extends Model {
     protected $useSoftDeletes = false;
 
     protected $allowedFields = ['id_campo','id_operacion', 'fecha', 'detalle', 'monto', 
-    'litros', 'activo', 'verifica', 'id_usuario', 'id_ctactecli', 'id_cliente'];
+    'litros', 'activo', 'verifica', 'id_usuario', 'id_ctactecli', 'id_cliente', 'id_rlabor'];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
